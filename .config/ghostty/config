@@ -1,0 +1,5 @@
+theme = Moonfly
+
+keybind = super+]=goto_split:next
+keybind = super+[=goto_split:previous
+background-opacity = 0.9

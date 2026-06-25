@@ -8,6 +8,7 @@
 | --- | --- | --- |
 | `.vimrc` | `~/.vimrc` | Vim 設定 |
 | `.ideavimrc` | `~/.ideavimrc` | IntelliJ (IdeaVim) 設定 |
+| `.config/nvim/init.lua` | `~/.config/nvim/init.lua` | Neovim 設定 |
 | `.config/wezterm/wezterm.lua` | `~/.config/wezterm/wezterm.lua` | WezTerm 本体設定 |
 | `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド |
 

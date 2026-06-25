@@ -1,0 +1,6 @@
+imap jj <Esc>
+" ビジュアルモードで ff を押すとノーマルモードへ戻る
+xmap ff <Esc>
+set clipboard=unnamed
+set surround
+

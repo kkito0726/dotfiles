@@ -36,6 +36,7 @@ LINK_MAP=(
   "zsh/zshenv:.zshenv"
   "zsh/zprofile:.zprofile"
   "zsh/zshrc:.zshrc"
+  "bash/bashrc:.bashrc"
 )
 
 DRY_RUN=false

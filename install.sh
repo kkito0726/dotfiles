@@ -33,6 +33,9 @@ EXCLUDES=(
 # 例) 実体は .config/foo/bar のまま、リンクは ~/.bar に張る:
 #   ".config/foo/bar:.bar"
 LINK_MAP=(
+  "zsh/zshenv:.zshenv"
+  "zsh/zprofile:.zprofile"
+  "zsh/zshrc:.zshrc"
 )
 
 DRY_RUN=false

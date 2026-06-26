@@ -6,6 +6,8 @@
 
 | リポジトリ内のパス | リンク先 | 用途 |
 | --- | --- | --- |
+| `.zshenv` | `~/.zshenv` | zsh 環境変数（cargo env など、全シェルで読まれる） |
+| `.zprofile` | `~/.zprofile` | zsh ログインシェル設定（brew shellenv） |
 | `.zshrc` | `~/.zshrc` | zsh 設定（PATH・プロンプト・補完など） |
 | `.vimrc` | `~/.vimrc` | Vim 設定 |
 | `.ideavimrc` | `~/.ideavimrc` | IntelliJ (IdeaVim) 設定 |

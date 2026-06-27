@@ -85,7 +85,6 @@
 
   "vim.hlsearch": true,
   "vim.useSystemClipboard": true,
-  // モード判別はカーソル形状で行う（ノーマル=ブロック / 挿入=縦線）。VSCodeVim 標準動作。
   "typescript.updateImportsOnFileMove.enabled": "always",
   "chat.instructionsFilesLocations": {
     ".github/instructions": true,

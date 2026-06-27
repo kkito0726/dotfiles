@@ -85,18 +85,7 @@
 
   "vim.hlsearch": true,
   "vim.useSystemClipboard": true,
-  // モードごとにステータスバー全体の背景色を変える（[背景色, 文字色]）
-  // ※この機能は全モードに色指定が必要（normal を消すと全モードで色が出なくなる）。
-  //   normal はテーマ既定(Dark Modern)の地色 #181818 に合わせ、見た目を無色に近づけている。
-  "vim.statusBarColorControl": true,
-  "vim.statusBarColors": {
-    "normal": ["#181818", "#ffffff"],
-    "insert": ["#5f8700", "#ffffff"],
-    "visual": ["#5f00af", "#ffffff"],
-    "visualline": ["#005f87", "#ffffff"],
-    "visualblock": ["#86592d", "#ffffff"],
-    "replace": ["#af0000", "#ffffff"]
-  },
+  // モード判別はカーソル形状で行う（ノーマル=ブロック / 挿入=縦線）。VSCodeVim 標準動作。
   "typescript.updateImportsOnFileMove.enabled": "always",
   "chat.instructionsFilesLocations": {
     ".github/instructions": true,

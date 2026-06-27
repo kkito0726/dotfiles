@@ -85,16 +85,15 @@
 
   "vim.hlsearch": true,
   "vim.useSystemClipboard": true,
-  // モード表示: 背景色は固定し、文字色だけモードで変える（[背景色, 文字色]）
-  // 背景が点滅しないのでチカチカせず、文字色で現在モードが分かる
+  // モードごとにステータスバー全体の背景色を変える（[背景色, 文字色]）
   "vim.statusBarColorControl": true,
   "vim.statusBarColors": {
-    "normal": ["#252526", "#9cdcfe"],
-    "insert": ["#252526", "#b5cea8"],
-    "visual": ["#252526", "#c586c0"],
-    "visualline": ["#252526", "#c586c0"],
-    "visualblock": ["#252526", "#c586c0"],
-    "replace": ["#252526", "#f48771"],
+    "normal": ["#005f87", "#ffffff"],
+    "insert": ["#5f8700", "#ffffff"],
+    "visual": ["#5f00af", "#ffffff"],
+    "visualline": ["#005f87", "#ffffff"],
+    "visualblock": ["#86592d", "#ffffff"],
+    "replace": ["#af0000", "#ffffff"],
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "chat.instructionsFilesLocations": {

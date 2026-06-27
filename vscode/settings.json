@@ -61,6 +61,16 @@
 
   "vim.hlsearch": true,
   "vim.useSystemClipboard": true,
+  // モードごとにステータスバー全体の背景色を変える（[背景色, 文字色]）
+  "vim.statusBarColorControl": true,
+  "vim.statusBarColors": {
+    "normal": ["#005f87", "#ffffff"],
+    "insert": ["#5f8700", "#ffffff"],
+    "visual": ["#5f00af", "#ffffff"],
+    "visualline": ["#005f87", "#ffffff"],
+    "visualblock": ["#86592d", "#ffffff"],
+    "replace": ["#af0000", "#ffffff"]
+  },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "chat.instructionsFilesLocations": {
     ".github/instructions": true,

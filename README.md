@@ -12,7 +12,7 @@
 | `bash/bashrc`                  | `~/.bashrc`                      | bash プロンプト（zsh の git プロンプトを移植。Docker コンテナ用） |
 | `.vimrc`                       | `~/.vimrc`                       | Vim 設定                                                          |
 | `.ideavimrc`                   | `~/.ideavimrc`                   | IntelliJ (IdeaVim) 設定                                           |
-| `.config/nvim/init.lua`        | `~/.config/nvim/init.lua`        | Neovim 設定                                                       |
+| `.config/nvim/`                | `~/.config/nvim`                 | Neovim 設定（LazyVim 一式。ディレクトリ単位でリンク）             |
 | `.config/wezterm/wezterm.lua`  | `~/.config/wezterm/wezterm.lua`  | WezTerm 本体設定                                                  |
 | `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド                                              |
 | `.config/ghostty/config`       | `~/.config/ghostty/config`       | Ghostty 設定                                                      |
@@ -51,6 +51,9 @@ cd ~/dotfiles
 - **OS 依存パス**: VSCode 設定など OS ごとに置き場所が違うものは、`install.sh` 内で `uname` 判定し
   リンク先を動的に決定する（macOS: `Library/Application Support/Code/User`、
   Linux: `.config/Code/User`、Windows: `AppData/Roaming/Code/User`）。
+- **ディレクトリ単位リンク**: 配下のファイルが増減する設定（LazyVim 等）は、末端ファイルではなく
+  ディレクトリ自体をリンクする。`install.sh` の `LINK_DIRS` に相対パスを追加する（例: `.config/nvim`）。
+  これにより、プラグイン追加や `lazy-lock.json` 更新のたびに `install.sh` を再実行する必要がない。
 
 ## 運用メモ
 

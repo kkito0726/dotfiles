@@ -55,6 +55,14 @@ if [ -n "$VSCODE_USER_DIR" ]; then
   LINK_MAP+=("vscode/settings.json:${VSCODE_USER_DIR}/settings.json")
 fi
 
+# ディレクトリ単位でリンクするもの（リポジトリ内の相対パス）。
+# 末端ファイルを個別にリンクするのではなく、ディレクトリ自体を $HOME 以下へリンクする。
+# 配下にファイルが頻繁に増減する設定（LazyVim 等）に向く。
+# これらは find のファイル走査からは除外され、ディレクトリリンクとして処理される。
+LINK_DIRS=(
+  ".config/nvim"
+)
+
 DRY_RUN=false
 FORCE=false
 
@@ -166,14 +174,23 @@ main() {
   $DRY_RUN && log "(dry-run モード: 実際の変更は行いません)"
   echo
 
-  # 除外ディレクトリは find の段階でも枝刈りして高速化
+  # find の枝刈り対象: .git と LINK_DIRS（ディレクトリ単位リンクは別処理するため）
+  local prune_args=( -path "$DOTFILES_DIR/.git" )
+  for d in ${LINK_DIRS[@]+"${LINK_DIRS[@]}"}; do
+    prune_args+=( -o -path "$DOTFILES_DIR/$d" )
+  done
+
+  # ファイル単位のリンク
   while IFS= read -r -d '' src; do
     link_file "$src"
   done < <(
-    find "$DOTFILES_DIR" \
-      \( -path "$DOTFILES_DIR/.git" \) -prune -o \
-      -type f -print0
+    find "$DOTFILES_DIR" \( "${prune_args[@]}" \) -prune -o -type f -print0
   )
+
+  # ディレクトリ単位のリンク（link_file をディレクトリにそのまま適用）
+  for d in ${LINK_DIRS[@]+"${LINK_DIRS[@]}"}; do
+    [ -e "$DOTFILES_DIR/$d" ] && link_file "$DOTFILES_DIR/$d"
+  done
 
   echo
   ok "完了しました。"

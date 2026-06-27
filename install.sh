@@ -25,6 +25,7 @@ EXCLUDES=(
   "install.sh"
   "README.md"
   "LICENSE"
+  "docs"
   ".DS_Store"
 )
 

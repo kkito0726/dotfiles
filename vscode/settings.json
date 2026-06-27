@@ -43,14 +43,38 @@
       "commands": ["workbench.action.splitEditorDown"],
     },
     // 検索・探索（LazyVim の Telescope 相当）
-    { "before": ["<leader>", "<space>"], "commands": ["workbench.action.quickOpen"] }, // ファイル検索
-    { "before": ["<leader>", "f", "f"], "commands": ["workbench.action.quickOpen"] },  // ファイル検索
-    { "before": ["<leader>", "f", "b"], "commands": ["workbench.action.showAllEditors"] }, // バッファ(開いてるエディタ)
-    { "before": ["<leader>", "f", "r"], "commands": ["workbench.action.openRecent"] }, // 最近開いた
-    { "before": ["<leader>", "/"], "commands": ["workbench.action.findInFiles"] },     // 全文検索(grep)
-    { "before": ["<leader>", "s", "g"], "commands": ["workbench.action.findInFiles"] },// 全文検索(grep)
-    { "before": ["<leader>", "s", "s"], "commands": ["workbench.action.gotoSymbol"] }, // シンボル検索
-    { "before": ["<leader>", ":"], "commands": ["workbench.action.showCommands"] },    // コマンド検索
+    {
+      "before": ["<leader>", "<space>"],
+      "commands": ["workbench.action.quickOpen"],
+    }, // ファイル検索
+    {
+      "before": ["<leader>", "f", "f"],
+      "commands": ["workbench.action.quickOpen"],
+    }, // ファイル検索
+    {
+      "before": ["<leader>", "f", "b"],
+      "commands": ["workbench.action.showAllEditors"],
+    }, // バッファ(開いてるエディタ)
+    {
+      "before": ["<leader>", "f", "r"],
+      "commands": ["workbench.action.openRecent"],
+    }, // 最近開いた
+    {
+      "before": ["<leader>", "/"],
+      "commands": ["workbench.action.findInFiles"],
+    }, // 全文検索(grep)
+    {
+      "before": ["<leader>", "s", "g"],
+      "commands": ["workbench.action.findInFiles"],
+    }, // 全文検索(grep)
+    {
+      "before": ["<leader>", "s", "s"],
+      "commands": ["workbench.action.gotoSymbol"],
+    }, // シンボル検索
+    {
+      "before": ["<leader>", ":"],
+      "commands": ["workbench.action.showCommands"],
+    }, // コマンド検索
   ],
   "files.exclude": {
     "**/._*": true,
@@ -61,15 +85,16 @@
 
   "vim.hlsearch": true,
   "vim.useSystemClipboard": true,
-  // モードごとにステータスバー全体の背景色を変える（[背景色, 文字色]）
+  // モード表示: 背景色は固定し、文字色だけモードで変える（[背景色, 文字色]）
+  // 背景が点滅しないのでチカチカせず、文字色で現在モードが分かる
   "vim.statusBarColorControl": true,
   "vim.statusBarColors": {
-    "normal": ["#005f87", "#ffffff"],
-    "insert": ["#5f8700", "#ffffff"],
-    "visual": ["#5f00af", "#ffffff"],
-    "visualline": ["#005f87", "#ffffff"],
-    "visualblock": ["#86592d", "#ffffff"],
-    "replace": ["#af0000", "#ffffff"]
+    "normal": ["#252526", "#9cdcfe"],
+    "insert": ["#252526", "#b5cea8"],
+    "visual": ["#252526", "#c586c0"],
+    "visualline": ["#252526", "#c586c0"],
+    "visualblock": ["#252526", "#c586c0"],
+    "replace": ["#252526", "#f48771"],
   },
   "typescript.updateImportsOnFileMove.enabled": "always",
   "chat.instructionsFilesLocations": {
@@ -202,5 +227,12 @@
   },
   "accessibility.signals.chatEditModifiedFile": {
     "sound": "off",
+  },
+  "workbench.colorCustomizations": {
+    "statusBar.background": "#252526",
+    "statusBar.noFolderBackground": "#252526",
+    "statusBar.debuggingBackground": "#252526",
+    "statusBar.foreground": "#9cdcfe",
+    "statusBar.debuggingForeground": "#9cdcfe",
   },
 }

@@ -12,8 +12,9 @@
   { "key": "ctrl+k", "command": "workbench.action.quickOpenSelectPrevious", "when": "inQuickOpen" },
   // ペイン（エディタグループ）のリサイズ: Cmd+Ctrl+矢印
   // ※ macOS の Mission Control と衝突する Ctrl+矢印を避けた割り当て
-  { "key": "cmd+ctrl+left", "command": "workbench.action.decreaseViewWidth" },
-  { "key": "cmd+ctrl+right", "command": "workbench.action.increaseViewWidth" },
-  { "key": "cmd+ctrl+up", "command": "workbench.action.increaseViewHeight" },
-  { "key": "cmd+ctrl+down", "command": "workbench.action.decreaseViewHeight" }
+  // ※ 矢印の向きと境界の動きが一致するよう増減を割り当て
+  { "key": "cmd+ctrl+left", "command": "workbench.action.increaseViewWidth" },
+  { "key": "cmd+ctrl+right", "command": "workbench.action.decreaseViewWidth" },
+  { "key": "cmd+ctrl+up", "command": "workbench.action.decreaseViewHeight" },
+  { "key": "cmd+ctrl+down", "command": "workbench.action.increaseViewHeight" }
 ]

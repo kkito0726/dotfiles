@@ -53,6 +53,7 @@ case "$(uname -s)" in
 esac
 if [ -n "$VSCODE_USER_DIR" ]; then
   LINK_MAP+=("vscode/settings.json:${VSCODE_USER_DIR}/settings.json")
+  LINK_MAP+=("vscode/keybindings.json:${VSCODE_USER_DIR}/keybindings.json")
 fi
 
 # ディレクトリ単位でリンクするもの（リポジトリ内の相対パス）。

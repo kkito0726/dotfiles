@@ -17,6 +17,7 @@
 | `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド                                              |
 | `.config/ghostty/config`       | `~/.config/ghostty/config`       | Ghostty 設定                                                      |
 | `vscode/settings.json`         | `~/Library/Application Support/Code/User/settings.json` | VSCode 設定（マシン固有値を除去済み）             |
+| `vscode/keybindings.json`      | `~/Library/Application Support/Code/User/keybindings.json` | VSCode キーバインド（OS 別パスで解決）         |
 
 ## セットアップ
 

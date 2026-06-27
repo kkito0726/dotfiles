@@ -63,17 +63,17 @@ Neovim の「バッファ」= VSCode の「エディタ（タブ）」。
 | --- | --- | --- |
 | 定義へジャンプ | `gd`（ネイティブ `F12`） | `gd` |
 | 宣言へ | `gD` | `gD` |
-| 参照一覧 | `Shift+F12` | `gr` |
-| 実装へ | `Ctrl+F12` | `gI` |
-| 型定義へ | （コマンド） | `gy` |
-| ホバー（型情報） | `gh` / `K` | `K` |
+| 参照一覧 | `gr`（ネイティブ `Shift+F12`） | `gr` |
+| 実装へ | `gI`（ネイティブ `Ctrl+F12`） | `gI` |
+| 型定義へ | `gy` | `gy` |
+| ホバー（型情報） | `K` / `gh` | `K` |
 | 定義をプレビュー（peek） | `Alt+F12` | — |
 
 ## ジャンプ後の戻る / 進む
 
-ここだけ環境差あり。
+VSCode 側も `Ctrl+o` / `Ctrl+i` を割り当てたので LazyVim と揃えてある（ネイティブの `Ctrl+-` / `Ctrl+Shift+-` も併用可）。
 
 | 操作 | VSCode / Cursor | Neovim (LazyVim) |
 | --- | --- | --- |
-| 戻る | `Ctrl+-`（macOS） | `Ctrl+o` |
-| 進む | `Ctrl+Shift+-`（macOS） | `Ctrl+i` |
+| 戻る | `Ctrl+o`（ネイティブ `Ctrl+-`） | `Ctrl+o` |
+| 進む | `Ctrl+i`（ネイティブ `Ctrl+Shift+-`） | `Ctrl+i` |

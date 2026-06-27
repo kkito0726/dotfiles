@@ -74,7 +74,17 @@
     {
       "before": ["<leader>", ":"],
       "commands": ["workbench.action.showCommands"]
-    } // コマンド検索
+    }, // コマンド検索
+    // LSP（LazyVim 相当）。gd / gh は VSCodeVim 組み込みを使う
+    // （組み込み gd は移動後ノーマルに戻り、シンボルが選択されたままにならない）
+    { "before": ["g", "D"], "commands": ["editor.action.revealDeclaration"] }, // 宣言へ
+    { "before": ["g", "r"], "commands": ["editor.action.goToReferences"] }, // 参照一覧
+    { "before": ["g", "I"], "commands": ["editor.action.goToImplementation"] }, // 実装へ
+    { "before": ["g", "y"], "commands": ["editor.action.goToTypeDefinition"] }, // 型定義へ
+    { "before": ["K"], "commands": ["editor.action.showHover"] }, // ホバー(型情報)
+    // ジャンプ後の戻る/進む（LazyVim と同じ Ctrl+o / Ctrl+i）
+    { "before": ["<C-o>"], "commands": ["workbench.action.navigateBack"] }, // 戻る
+    { "before": ["<C-i>"], "commands": ["workbench.action.navigateForward"] } // 進む
   ],
   "files.exclude": {
     "**/._*": true

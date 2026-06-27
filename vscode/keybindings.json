@@ -1,0 +1,13 @@
+// エディタ外（ターミナル・エクスプローラー・パネル等）でも Ctrl+h/j/k/l で
+// フォーカス移動できるようにする。エディタ内は VSCodeVim 側の設定が担当するため
+// when: "!editorTextFocus" でエディタ以外のときだけ有効化している。
+[
+  { "key": "ctrl+h", "command": "workbench.action.navigateLeft", "when": "!editorTextFocus" },
+  // ターミナル内では Ctrl+l をシェルに渡す（画面クリアを優先）ため terminalFocus を除外
+  { "key": "ctrl+l", "command": "workbench.action.navigateRight", "when": "!editorTextFocus && !terminalFocus" },
+  { "key": "ctrl+k", "command": "workbench.action.navigateUp", "when": "!editorTextFocus && !inQuickOpen" },
+  { "key": "ctrl+j", "command": "workbench.action.navigateDown", "when": "!editorTextFocus && !inQuickOpen" },
+  // クイックオープン（ファイル検索/コマンドパレット）の候補を上下移動: Ctrl+j / Ctrl+k
+  { "key": "ctrl+j", "command": "workbench.action.quickOpenSelectNext", "when": "inQuickOpen" },
+  { "key": "ctrl+k", "command": "workbench.action.quickOpenSelectPrevious", "when": "inQuickOpen" }
+]

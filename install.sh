@@ -37,8 +37,22 @@ LINK_MAP=(
   "zsh/zprofile:.zprofile"
   "zsh/zshrc:.zshrc"
   "bash/bashrc:.bashrc"
-  "vscode/settings.json:Library/Application Support/Code/User/settings.json"
 )
+
+# OS 依存のリンク先は uname で判定して動的に追加する。
+# VSCode のユーザー設定ディレクトリは OS ごとに場所が異なる:
+#   macOS : ~/Library/Application Support/Code/User
+#   Linux : ~/.config/Code/User
+#   Windows(MSYS等): ~/AppData/Roaming/Code/User
+case "$(uname -s)" in
+  Darwin)            VSCODE_USER_DIR="Library/Application Support/Code/User" ;;
+  Linux)             VSCODE_USER_DIR=".config/Code/User" ;;
+  MINGW*|MSYS*|CYGWIN*) VSCODE_USER_DIR="AppData/Roaming/Code/User" ;;
+  *)                 VSCODE_USER_DIR="" ;;  # 未対応OSは VSCode 設定をスキップ
+esac
+if [ -n "$VSCODE_USER_DIR" ]; then
+  LINK_MAP+=("vscode/settings.json:${VSCODE_USER_DIR}/settings.json")
+fi
 
 DRY_RUN=false
 FORCE=false

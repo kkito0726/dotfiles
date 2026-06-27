@@ -48,6 +48,9 @@ cd ~/dotfiles
 - **除外**: `.git` / `install.sh` / `README.md` などはリンク対象外（`install.sh` の `EXCLUDES` で管理）。
 - **例外マッピング**: 実体の位置とリンク先を変えたい場合は `install.sh` の `LINK_MAP` に
   `"リポジトリ内の相対パス:$HOME からのリンク先"` を追加する。
+- **OS 依存パス**: VSCode 設定など OS ごとに置き場所が違うものは、`install.sh` 内で `uname` 判定し
+  リンク先を動的に決定する（macOS: `Library/Application Support/Code/User`、
+  Linux: `.config/Code/User`、Windows: `AppData/Roaming/Code/User`）。
 
 ## 運用メモ
 

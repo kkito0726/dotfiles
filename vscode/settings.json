@@ -88,7 +88,6 @@
   // モードごとにステータスバー全体の背景色を変える（[背景色, 文字色]）
   "vim.statusBarColorControl": true,
   "vim.statusBarColors": {
-    "normal": ["#005f87", "#ffffff"],
     "insert": ["#5f8700", "#ffffff"],
     "visual": ["#5f00af", "#ffffff"],
     "visualline": ["#005f87", "#ffffff"],
@@ -228,10 +227,10 @@
     "sound": "off",
   },
   "workbench.colorCustomizations": {
-    "statusBar.background": "#252526",
-    "statusBar.noFolderBackground": "#252526",
-    "statusBar.debuggingBackground": "#252526",
-    "statusBar.foreground": "#9cdcfe",
-    "statusBar.debuggingForeground": "#9cdcfe",
+    "statusBar.background": "#005f87",
+    "statusBar.noFolderBackground": "#005f87",
+    "statusBar.debuggingBackground": "#005f87",
+    "statusBar.foreground": "#ffffff",
+    "statusBar.debuggingForeground": "#ffffff"
   },
 }

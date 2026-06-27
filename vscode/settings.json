@@ -1,0 +1,196 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "editor.minimap.enabled": false,
+  "git.confirmSync": false,
+  "remote.autoForwardPortsSource": "hybrid",
+  "editor.formatOnSave": true,
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // キーバインドは dotfiles の ~/.vimrc を単一ソースとして読み込む
+  "vim.vimrc.enable": true,
+  "vim.vimrc.path": "~/.vimrc",
+  // LazyVim 風のナビゲーション（VSCode コマンドを呼ぶため settings.json 側に記述）
+  "vim.leader": "<space>",
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // ペイン/エクスプローラー/ターミナル間の移動: <C-h/j/k/l>
+    // navigate* はエディタグループだけでなくサイドバー・パネル(ターミナル)も横断する
+    { "before": ["<C-h>"], "commands": ["workbench.action.navigateLeft"] },
+    { "before": ["<C-l>"], "commands": ["workbench.action.navigateRight"] },
+    { "before": ["<C-k>"], "commands": ["workbench.action.navigateUp"] },
+    { "before": ["<C-j>"], "commands": ["workbench.action.navigateDown"] },
+    // エクスプローラーにフォーカス: <leader>e
+    { "before": ["<leader>", "e"], "commands": ["workbench.view.explorer"] },
+    // バッファ（タブ）移動: Shift+h / Shift+l, [b / ]b
+    { "before": ["<S-h>"], "commands": ["workbench.action.previousEditor"] },
+    { "before": ["<S-l>"], "commands": ["workbench.action.nextEditor"] },
+    { "before": ["[", "b"], "commands": ["workbench.action.previousEditor"] },
+    { "before": ["]", "b"], "commands": ["workbench.action.nextEditor"] },
+    // バッファ削除: <leader>bd
+    {
+      "before": ["<leader>", "b", "d"],
+      "commands": ["workbench.action.closeActiveEditor"],
+    },
+    // ウィンドウ分割: <leader>| (縦) / <leader>- (横)
+    {
+      "before": ["<leader>", "|"],
+      "commands": ["workbench.action.splitEditorRight"],
+    },
+    {
+      "before": ["<leader>", "-"],
+      "commands": ["workbench.action.splitEditorDown"],
+    },
+    // 検索・探索（LazyVim の Telescope 相当）
+    { "before": ["<leader>", "<space>"], "commands": ["workbench.action.quickOpen"] }, // ファイル検索
+    { "before": ["<leader>", "f", "f"], "commands": ["workbench.action.quickOpen"] },  // ファイル検索
+    { "before": ["<leader>", "f", "b"], "commands": ["workbench.action.showAllEditors"] }, // バッファ(開いてるエディタ)
+    { "before": ["<leader>", "f", "r"], "commands": ["workbench.action.openRecent"] }, // 最近開いた
+    { "before": ["<leader>", "/"], "commands": ["workbench.action.findInFiles"] },     // 全文検索(grep)
+    { "before": ["<leader>", "s", "g"], "commands": ["workbench.action.findInFiles"] },// 全文検索(grep)
+    { "before": ["<leader>", "s", "s"], "commands": ["workbench.action.gotoSymbol"] }, // シンボル検索
+    { "before": ["<leader>", ":"], "commands": ["workbench.action.showCommands"] },    // コマンド検索
+  ],
+  "files.exclude": {
+    "**/._*": true,
+  },
+  "search.exclude": {
+    "**/._*": true,
+  },
+
+  "vim.hlsearch": true,
+  "vim.useSystemClipboard": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "chat.instructionsFilesLocations": {
+    ".github/instructions": true,
+    ".claude/rules": true,
+    "~/.copilot/instructions": true,
+    "~/.claude/rules": true,
+  },
+  "cSpell.userWords": ["dtype", "kkito", "Usecase", "userv"],
+  "editor.accessibilitySupport": "on",
+  "chat.disableAIFeatures": true,
+  "terminal.integrated.enableVisualBell": false,
+  "markdown.marp.openExportedHtmlInIntegratedBrowser": "window",
+  "markdown.marp.html": "all",
+
+  // ------------------------------ signals (bothering sounds) -------------------------
+  "accessibility.signals.chatRequestSent": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.chatResponseReceived": {
+    "sound": "off",
+  },
+  "accessibility.signals.chatUserActionRequired": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.clear": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.codeActionApplied": {
+    "sound": "off",
+  },
+  "accessibility.signals.codeActionTriggered": {
+    "sound": "off",
+  },
+  "accessibility.signals.diffLineDeleted": {
+    "sound": "off",
+  },
+  "accessibility.signals.progress": {
+    "sound": "off",
+  },
+  "accessibility.signals.editsUndone": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.positionHasWarning": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.positionHasError": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.noInlayHints": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.nextEditSuggestion": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.lineHasWarning": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.lineHasInlineSuggestion": {
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasFoldedArea": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.lineHasError": {
+    "sound": "off",
+  },
+  "accessibility.signals.lineHasBreakpoint": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.diffLineInserted": {
+    "sound": "off",
+  },
+  "accessibility.signals.diffLineModified": {
+    "sound": "off",
+  },
+  "accessibility.signals.editsKept": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.notebookCellCompleted": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.notebookCellFailed": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.onDebugBreak": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.taskCompleted": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.taskFailed": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.terminalCommandFailed": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.terminalBell": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.terminalCommandSucceeded": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.terminalQuickFix": {
+    "sound": "off",
+    "announcement": "off",
+  },
+  "accessibility.signals.voiceRecordingStopped": {
+    "sound": "off",
+  },
+  "accessibility.signals.chatEditModifiedFile": {
+    "sound": "off",
+  },
+}

@@ -37,6 +37,7 @@ LINK_MAP=(
   "zsh/zprofile:.zprofile"
   "zsh/zshrc:.zshrc"
   "bash/bashrc:.bashrc"
+  "vscode/settings.json:Library/Application Support/Code/User/settings.json"
 )
 
 DRY_RUN=false

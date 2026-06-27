@@ -4,18 +4,19 @@
 
 ## 管理対象
 
-| リポジトリ内のパス | リンク先 | 用途 |
-| --- | --- | --- |
-| `zsh/zshenv` | `~/.zshenv` | zsh 環境変数（cargo env など、全シェルで読まれる） |
-| `zsh/zprofile` | `~/.zprofile` | zsh ログインシェル設定（brew shellenv） |
-| `zsh/zshrc` | `~/.zshrc` | zsh 設定（PATH・プロンプト・補完など） |
-| `bash/bashrc` | `~/.bashrc` | bash プロンプト（zsh の git プロンプトを移植。Docker コンテナ用） |
-| `.vimrc` | `~/.vimrc` | Vim 設定 |
-| `.ideavimrc` | `~/.ideavimrc` | IntelliJ (IdeaVim) 設定 |
-| `.config/nvim/init.lua` | `~/.config/nvim/init.lua` | Neovim 設定 |
-| `.config/wezterm/wezterm.lua` | `~/.config/wezterm/wezterm.lua` | WezTerm 本体設定 |
-| `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド |
-| `.config/ghostty/config` | `~/.config/ghostty/config` | Ghostty 設定 |
+| リポジトリ内のパス             | リンク先                         | 用途                                                              |
+| ------------------------------ | -------------------------------- | ----------------------------------------------------------------- |
+| `zsh/zshenv`                   | `~/.zshenv`                      | zsh 環境変数（cargo env など、全シェルで読まれる）                |
+| `zsh/zprofile`                 | `~/.zprofile`                    | zsh ログインシェル設定（brew shellenv）                           |
+| `zsh/zshrc`                    | `~/.zshrc`                       | zsh 設定（PATH・プロンプト・補完など）                            |
+| `bash/bashrc`                  | `~/.bashrc`                      | bash プロンプト（zsh の git プロンプトを移植。Docker コンテナ用） |
+| `.vimrc`                       | `~/.vimrc`                       | Vim 設定                                                          |
+| `.ideavimrc`                   | `~/.ideavimrc`                   | IntelliJ (IdeaVim) 設定                                           |
+| `.config/nvim/init.lua`        | `~/.config/nvim/init.lua`        | Neovim 設定                                                       |
+| `.config/wezterm/wezterm.lua`  | `~/.config/wezterm/wezterm.lua`  | WezTerm 本体設定                                                  |
+| `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド                                              |
+| `.config/ghostty/config`       | `~/.config/ghostty/config`       | Ghostty 設定                                                      |
+| `vscode/settings.json`         | `~/Library/Application Support/Code/User/settings.json` | VSCode 設定（マシン固有値を除去済み）             |
 
 ## セットアップ
 
@@ -33,12 +34,12 @@ cd ~/dotfiles
 
 ## install.sh
 
-| コマンド | 動作 |
-| --- | --- |
-| `./install.sh` | リンクを作成（既存ファイルは確認のうえバックアップして置き換え） |
-| `./install.sh --dry-run` | 実際には変更せず、何が起きるかだけ表示 |
-| `./install.sh --force` | 確認なしで既存ファイルを置き換え（バックアップは必ず取る） |
-| `./install.sh --help` | ヘルプを表示 |
+| コマンド                 | 動作                                                             |
+| ------------------------ | ---------------------------------------------------------------- |
+| `./install.sh`           | リンクを作成（既存ファイルは確認のうえバックアップして置き換え） |
+| `./install.sh --dry-run` | 実際には変更せず、何が起きるかだけ表示                           |
+| `./install.sh --force`   | 確認なしで既存ファイルを置き換え（バックアップは必ず取る）       |
+| `./install.sh --help`    | ヘルプを表示                                                     |
 
 ### 仕様
 

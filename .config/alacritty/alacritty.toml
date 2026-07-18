@@ -1,0 +1,26 @@
+# Alacritty 設定
+#
+# フォントについて:
+#   macOS 版 Alacritty は CoreText 実装のためフォントフォールバックを設定できず、
+#   font.normal.family に指定した 1 ファミリしか使えない（Linux の fontconfig 相当の
+#   カスケード指定が無い）。そのため "Menlo → Nerd Font" のような優先度指定は不可。
+#   代わりに Menlo 派生フォント Meslo の Nerd Font パッチ版を使うことで、
+#   Menlo とほぼ同じ字形のまま Nerd グリフを 1 ファミリで賄っている。
+#   参照: https://github.com/alacritty/alacritty/issues/7581
+
+[font]
+size = 13.0
+
+# Mono 版はアイコンが 1 セル幅に固定される。Propo 版だとターミナルで桁がずれる。
+normal = { family = "MesloLGS Nerd Font Mono", style = "Regular" }
+bold   = { family = "MesloLGS Nerd Font Mono", style = "Bold" }
+italic = { family = "MesloLGS Nerd Font Mono", style = "Italic" }
+
+# 罫線・ブロック文字を内蔵レンダラで描画してセル間の隙間を無くす
+builtin_box_drawing = true
+
+[window]
+# macOS で Option キーを Alt として扱う（Neovim / tmux の Alt 系キーバインド用）
+option_as_alt = "Both"
+opacity = 0.75
+

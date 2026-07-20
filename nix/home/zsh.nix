@@ -40,7 +40,7 @@
       lt = "eza --tree --level=2";
       cat = "bat";
       v = "nvim";
-      vim = "nvim";
+      # vim は本物の Vim (vim.nix) を指すので alias は張らない
       lg = "lazygit";
       hm = "home-manager";
     };

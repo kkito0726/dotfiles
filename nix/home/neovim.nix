@@ -13,8 +13,9 @@ in
     enable = true;
     defaultEditor = true;
 
-    viAlias = true;
-    vimAlias = true;
+    # vim / vi は本物の Vim (vim.nix) に譲るため alias は張らない。
+    viAlias = false;
+    vimAlias = false;
 
     # LazyVim のプラグインは lazy.nvim が管理するため、
     # ここでは Nix でプラグインを入れずランタイム依存だけを揃える。

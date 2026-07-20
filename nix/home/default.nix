@@ -7,6 +7,7 @@
     ./git.nix
     ./lazygit.nix
     ./neovim.nix
+    ./vim.nix
     ./tmux.nix
   ];
 

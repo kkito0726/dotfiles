@@ -1,6 +1,19 @@
 # dotfiles
 
-個人用の設定ファイル（dotfiles）を集約し、シンボリックリンクで `$HOME` 以下へ展開して管理するリポジトリ。
+個人用の設定ファイル（dotfiles）を集約して管理するリポジトリ。
+
+展開方法は環境によって 2 通りある。
+
+| 環境 | 方法 | 入口 |
+| --- | --- | --- |
+| macOS（ホスト） | シンボリックリンクで `$HOME` 以下へ展開 | `./install.sh` |
+| Linux VM | Nix / Home Manager で環境ごと構築 | `flake.nix` → [docs/nix-vm.md](docs/nix-vm.md) |
+
+nvim 設定（`.config/nvim`）はどちらも同じ実体を指すので、両環境で共有される。
+
+> **VM 上で `./install.sh` を実行しないこと。** `~/.zshenv` が Home Manager と
+> 衝突し、`zsh/zshrc` も Homebrew 前提で Linux では動かない。詳細は
+> [docs/nix-vm.md](docs/nix-vm.md) を参照。
 
 ## 管理対象
 
@@ -20,7 +33,16 @@
 | `vscode/settings.json`         | `~/Library/Application Support/Code/User/settings.json` | VSCode 設定（マシン固有値を除去済み）             |
 | `vscode/keybindings.json`      | `~/Library/Application Support/Code/User/keybindings.json` | VSCode キーバインド（OS 別パスで解決）         |
 
+シンボリックリンクの対象外（`install.sh` の `EXCLUDES` に入っている）:
+
+| パス | 用途 |
+| --- | --- |
+| `flake.nix` / `flake.lock` | Linux VM 用の Home Manager 設定の入口 |
+| `nix/home/` | Home Manager のモジュール群（zsh・git・lazygit・nvim・tmux） |
+
 ## セットアップ
+
+### macOS（ホスト）
 
 ```sh
 git clone <this-repo> ~/dotfiles
@@ -32,6 +54,16 @@ cd ~/dotfiles
 
 ```
 ~/dotfiles/.config/wezterm/wezterm.lua  ->  ~/.config/wezterm/wezterm.lua
+```
+
+### Linux VM
+
+Nix と Home Manager で、zsh + oh-my-zsh / LazyVim / lazygit / tmux をまとめて構築する。
+Nix も git も入っていない状態からの手順は [docs/nix-vm.md](docs/nix-vm.md) を参照。
+
+```sh
+git clone <this-repo> ~/dotfiles
+nix run home-manager/master -- switch --flake ~/dotfiles#$USER@$(uname -m)-linux
 ```
 
 ## install.sh

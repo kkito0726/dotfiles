@@ -27,6 +27,11 @@ EXCLUDES=(
   "LICENSE"
   "docs"
   ".DS_Store"
+  # Nix / Home Manager 用。$HOME にリンクするものではなく、
+  # `home-manager switch --flake ~/dotfiles#...` から参照される。
+  "flake.nix"
+  "flake.lock"
+  "nix"
 )
 
 # 例外マッピング: 既定では「リポジトリ内の相対パス = $HOME 以下のリンク先」だが、

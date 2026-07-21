@@ -213,7 +213,9 @@ nvim 側で `vim.g.clipboard` を OSC 52 に設定する。
 
 ## tmux
 
-ホストの `~/.tmux.conf` と同じキーバインドを `nix/home/tmux.nix` で再現している。
+キーバインド定義はリポジトリ直下の `.tmux.conf` に一本化している。
+ホストはこれを `~/.tmux.conf` へリンクして使い、VM 側は `nix/home/tmux.nix` が
+`builtins.readFile` で同じファイルを読み込む (単一ソース)。
 prefix は `C-b` ではなく **`C-q`**。
 
 | キー (prefix 後) | 動作 |
@@ -234,8 +236,8 @@ prefix は `C-b` ではなく **`C-q`**。
 - `escape-time 10` — 既定の 500ms だと nvim の `ESC` / `jj` が体感で遅れる
 - `history-limit 50000`
 
-> ホストの `~/.tmux.conf` はまだこのリポジトリの管理外 (symlink していない)。
-> 統一するなら `.tmux.conf` をリポジトリに移して `install.sh` に任せる。
+VM では `bind r` の reload 先だけ、ホスト共有の定義を上書きして
+home-manager 生成ファイル (`~/.config/tmux/tmux.conf`) を指すようにしている。
 
 ## VM ごとに書き換える場所
 

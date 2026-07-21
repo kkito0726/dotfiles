@@ -1,42 +1,33 @@
 { pkgs, config, ... }:
 
+let
+  # ホストと共有するキーバインド定義。install.sh がホストの ~/.tmux.conf へ
+  # リンクするのと同じファイル (リポジトリ直下の .tmux.conf) を、VM 側でも
+  # ここで読み込む。これで prefix / ペイン移動 / 分割の定義は 1 箇所だけになる。
+  sharedConf = builtins.readFile ../../.tmux.conf;
+in
 {
-  # ホストの ~/.tmux.conf と同じキーバインドを再現する。
-  # (ホスト側のファイルは dotfiles リポジトリ管理外なので、ここでは
-  #  Nix で宣言的に持つ。dotfiles に移すならこのファイルは削ってよい)
   programs.tmux = {
     enable = true;
+    mouse = true; # 実際は sharedConf の `set -g mouse on` でも入るが明示しておく
 
-    # prefix を C-q にする。
-    # unbind C-b / set -g prefix / bind C-q send-prefix はこの option が生成する。
-    prefix = "C-q";
-
-    mouse = true;
-
-    # ── 以下はホストの .tmux.conf には無いが、VM で使うために入れている ──
+    # ── ホストの .tmux.conf には無いが、VM で必要な設定 ──
     shell = "${pkgs.zsh}/bin/zsh"; # chsh 失敗時でも tmux 内は zsh にする
     terminal = "tmux-256color";
     historyLimit = 50000;
     escapeTime = 10; # 既定の 500ms だと nvim の ESC が体感で遅れる
-    # ──────────────────────────────────────────────────────────────────
 
     extraConfig = ''
+      # ── ここまで: ホスト共有の ~/.tmux.conf と同一の内容 (単一ソース) ──
+      ${sharedConf}
+
+      # ── ここから: VM 専用の上書き ──
       # truecolor を有効にする (LazyVim の配色のため)
       set -ga terminal-overrides ",*256col*:Tc"
 
-      # vim のキーバインドでペインを移動します。
-      bind h select-pane -L
-      bind j select-pane -D
-      bind k select-pane -U
-      bind l select-pane -R
-
-      bind | split-window -h
-      bind v split-window -v
-      bind s choose-tree -Zw
-
-      # ホストでは ~/.tmux.conf を読み直していたが、ここでの設定の実体は
-      # home-manager が生成する nix store 上のファイル。設定を変えるには
-      # home-manager switch が必要で、r はその後の再読み込みに使う。
+      # sharedConf の `bind r` はホストの ~/.tmux.conf を読み直すが、VM では
+      # 設定の実体が home-manager 生成ファイルなので reload 先を差し替える。
+      # (後勝ちなので sharedConf 側の bind r を上書きする)
       bind r source-file ${config.xdg.configHome}/tmux/tmux.conf \; display "Reloaded!"
     '';
   };

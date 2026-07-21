@@ -21,7 +21,7 @@
 
     oh-my-zsh = {
       enable = true;
-      theme = "robbyrussell";
+      theme = "amuse";
       plugins = [
         "git"
         "sudo" # ESC 2 回で直前のコマンドに sudo を付ける

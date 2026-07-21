@@ -42,27 +42,68 @@ Nix で運用しているマシンでは実行しないこと（`~/.zshenv` が 
 | `flake.nix` / `flake.lock` | Home Manager 設定の入口（macOS / Linux 共通） |
 | `nix/home/` | Home Manager のモジュール群（zsh・git・lazygit・nvim・vim・tmux ＋ macOS 専用の terminals・vscode） |
 
+## Nix のインストール（macOS / Linux 共通）
+
+[Determinate Systems のインストーラ](https://install.determinate.systems)を使う。
+flakes と `nix-command` が最初から有効なので `nix.conf` を手で編集しなくてよい。macOS / Linux 共通。
+
+```sh
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+インストール直後の**現在のシェルにはまだ `nix` が無い**。再ログインするか、プロファイルを読み込む:
+
+```sh
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+nix --version   # 動作確認
+```
+
+- **Linux VM**（Nix も git も無い素の状態からの完全手順、systemd 無し環境の分岐なども含む）は
+  [docs/nix-vm.md](docs/nix-vm.md) を参照。
+- **macOS** は下記「セットアップ › macOS」へ。
+
 ## セットアップ
 
 ### macOS（ホスト）
 
-前提: [Nix](https://nixos.org)（Determinate Nix 等）と、GUI アプリ用に [Homebrew](https://brew.sh) を導入済み。
-WezTerm / Ghostty / Alacritty / VSCode の**本体**は Homebrew cask で入れる（設定ファイルは Home Manager が symlink する）。
+前提として **Nix**（上記）と、GUI アプリ用に [Homebrew](https://brew.sh) を導入しておく。
 
 ```sh
-git clone <this-repo> ~/dotfiles
+# 1. Homebrew（未導入なら）
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 2. GUI アプリ本体を cask で入れる（設定ファイルは Home Manager が symlink する）
+brew install --cask wezterm ghostty alacritty visual-studio-code
+
+# 3. このリポジトリを clone（clone 先は ~/dotfiles にすること。別の場所なら flake.nix の dotfilesDir を合わせる）
+git clone https://github.com/kkito0726/dotfiles.git ~/dotfiles
+
+# 4. Home Manager を適用（home-manager コマンドはまだ無いので nix run で呼ぶ）
 nix run home-manager/master -- switch --flake ~/dotfiles#$USER@$(uname -m | sed 's/arm64/aarch64/')-darwin
 ```
 
+> **旧 `install.sh` で symlink 済みのマシンから移行する場合**、`home-manager switch` は
+> 既存ファイルを上書きできず失敗する。適用前に install.sh 由来のリンクを外しておく（実体は
+> repo 側なので消えない）:
+>
+> ```sh
+> rm -f ~/.zshrc ~/.zshenv ~/.zprofile \
+>       ~/.config/wezterm/wezterm.lua ~/.config/wezterm/keybinds.lua \
+>       ~/.config/ghostty/config ~/.config/alacritty/alacritty.toml
+> rm -f "$HOME/Library/Application Support/Code/User/settings.json" \
+>       "$HOME/Library/Application Support/Code/User/keybindings.json"
+> ```
+
+`$USER` が `flake.nix` の `username`（既定 `ken`）と一致している必要がある。違う場合は先に `flake.nix` を書き換える。
 以降は `hm-switch`（zsh 関数。OS を判定して適切な flake attribute を選ぶ）で再適用できる。
 
 ### Linux VM
 
 Nix と Home Manager で、zsh + oh-my-zsh / LazyVim / lazygit / tmux をまとめて構築する。
-Nix も git も入っていない状態からの手順は [docs/nix-vm.md](docs/nix-vm.md) を参照。
+Nix も git も入っていない状態からの完全な手順は [docs/nix-vm.md](docs/nix-vm.md) を参照。
 
 ```sh
-git clone <this-repo> ~/dotfiles
+git clone https://github.com/kkito0726/dotfiles.git ~/dotfiles
 nix run home-manager/master -- switch --flake ~/dotfiles#$USER@$(uname -m)-linux
 ```
 

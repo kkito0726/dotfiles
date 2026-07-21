@@ -19,10 +19,7 @@
       # ── モダンな置き換え系 ──────────────────────
       ripgrep # rg : LazyVim の grep 検索にも必須
       fd # find の代替 : LazyVim のファイル検索にも必須
-      bat # cat の代替
-      eza # ls の代替
-      fzf
-      zoxide
+      # bat / eza / fzf / zoxide は下の programs.*.enable が本体を入れるのでここには書かない
 
       # ── ビルドツール (treesitter のコンパイル等に必要) ──
       gcc

@@ -46,7 +46,7 @@ in
       ll = "eza -l --group-directories-first --git";
       la = "eza -la --group-directories-first --git";
       lt = "eza --tree --level=2";
-      cat = "bat";
+      # cat は本物の cat のまま。色付き表示が欲しいときは bat を直接使う。
       v = "nvim";
       # vim は本物の Vim (vim.nix) を指すので alias は張らない
       lg = "lazygit";

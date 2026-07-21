@@ -1,5 +1,5 @@
 {
-  description = "dotfiles — Home Manager environment for fresh Linux VMs";
+  description = "dotfiles — Home Manager environment (macOS host & Linux VMs)";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -23,6 +23,8 @@
       systems = [
         "x86_64-linux"
         "aarch64-linux"
+        "aarch64-darwin" # Apple Silicon の macOS ホスト
+        "x86_64-darwin" # Intel Mac (使わないなら消してよい)
       ];
       # ─────────────────────────────────────────────────────────
 

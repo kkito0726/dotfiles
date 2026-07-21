@@ -1,5 +1,13 @@
-{ config, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
+let
+  isDarwin = pkgs.stdenv.isDarwin;
+in
 {
   programs.zsh = {
     enable = true;
@@ -45,6 +53,21 @@
       hm = "home-manager";
     };
 
+    # ログインシェル (.zprofile)。macOS のみ Homebrew / OrbStack を初期化する。
+    # brew shellenv は login shell で 1 度だけ評価すればよいのでここに置く。
+    profileExtra = lib.optionalString isDarwin ''
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+
+      # OrbStack: command-line tools and integration
+      source "$HOME/.orbstack/shell/init.zsh" 2>/dev/null || :
+    '';
+
+    # 全シェルで読まれる (.zshenv)。cargo は macOS / Linux 両方あり得るので
+    # 存在チェック付きで無条件に読む。
+    envExtra = ''
+      [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+    '';
+
     # Home Manager 25.05 以降は initExtra ではなく initContent を使う
     initContent = ''
       # Nix が入れたコマンドを最優先にする
@@ -58,10 +81,44 @@
       zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
       zstyle ':completion:*' menu select
 
-      # このリポジトリを編集して即反映するためのヘルパー
+      # 編集中のコマンドを nvim で開く (Ctrl-X Ctrl-E → :wq で戻る)
+      autoload -Uz edit-command-line
+      zle -N edit-command-line
+      bindkey '^X^E' edit-command-line
+
+      # このリポジトリを編集して即反映するためのヘルパー。
+      # OS に応じて flake の attribute (…-darwin / …-linux) を切り替える。
       hm-switch() {
-        home-manager switch --flake "$HOME/nix-config-vm#$USER@$(uname -m | sed 's/arm64/aarch64/')-linux"
+        local arch sys
+        arch="$(uname -m | sed 's/arm64/aarch64/')"
+        case "$(uname -s)" in
+          Darwin) sys="$arch-darwin" ;;
+          *)      sys="$arch-linux" ;;
+        esac
+        home-manager switch --flake "$HOME/dotfiles#$USER@$sys"
       }
+    ''
+    # ── macOS ホスト専用の対話設定 (旧 zsh/zshrc から移植) ──
+    # pyenv / nvm は Homebrew 管理のまま維持する (A 案)。将来 Nix / mise へ
+    # 寄せる場合はこのブロックを差し替える。
+    + lib.optionalString isDarwin ''
+
+      # pyenv: Python バージョン管理
+      export PYENV_ROOT="$HOME/.pyenv"
+      export PATH="$PYENV_ROOT/shims:$PATH"
+      eval "$(pyenv init -)"
+
+      # nvm: Node バージョン管理 (Homebrew の nvm)
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+      [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
+
+      # ユーザーローカルの実行ファイル
+      export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/bin:$PATH"
+
+      # よく使うエイリアス
+      alias fmt-python="isort . && black ."
+      alias pyMEA-classmap="pyreverse -o png -p pyMEA pyMEA"
     '';
   };
 

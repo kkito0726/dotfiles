@@ -6,7 +6,8 @@
 }:
 
 let
-  vimrcSource = "${config.home.homeDirectory}/${dotfilesDir}/.vimrc";
+  repo = "${config.home.homeDirectory}/${dotfilesDir}";
+  vimrcSource = "${repo}/.vimrc";
 in
 {
   # 本物の Vim。neovim (LazyVim) とは別物として共存させる。
@@ -20,6 +21,10 @@ in
 
   # ~/.vimrc -> ~/dotfiles/.vimrc
   # nvim 設定と同じく、実体はリポジトリ側に置いて mkOutOfStoreSymlink で指す。
-  # ホスト (macOS) が install.sh で張るリンクと同じ実体になる。
   home.file.".vimrc".source = config.lib.file.mkOutOfStoreSymlink vimrcSource;
+
+  # ~/.ideavimrc -> ~/dotfiles/.ideavimrc (IntelliJ の IdeaVim 設定)。
+  # IntelliJ は macOS で使う想定だが、ファイルを置くだけなら無害なので全 OS で symlink する
+  # (terminals.nix と同じ方針)。
+  home.file.".ideavimrc".source = config.lib.file.mkOutOfStoreSymlink "${repo}/.ideavimrc";
 }

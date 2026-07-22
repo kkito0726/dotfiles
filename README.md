@@ -12,35 +12,32 @@
 
 設定の実体（nvim / vim / tmux / wezterm / ghostty / alacritty / vscode）は、どの OS でも
 リポジトリ内の同じファイルを `mkOutOfStoreSymlink` で指すので、編集して即反映・そのまま commit できる。
-
-`install.sh` は **Nix を入れられないマシン用のフォールバック**として残してある（下記「install.sh（フォールバック）」参照）。
-Nix で運用しているマシンでは実行しないこと（`~/.zshenv` が Home Manager と衝突する）。
+zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から設定ファイルを生成する。
 
 ## 管理対象
 
-| リポジトリ内のパス             | リンク先                         | 用途                                                              |
-| ------------------------------ | -------------------------------- | ----------------------------------------------------------------- |
-| `zsh/zshenv`                   | `~/.zshenv`                      | zsh 環境変数（cargo env など、全シェルで読まれる）                |
-| `zsh/zprofile`                 | `~/.zprofile`                    | zsh ログインシェル設定（brew shellenv）                           |
-| `zsh/zshrc`                    | `~/.zshrc`                       | zsh 設定（PATH・プロンプト・補完など）                            |
-| `bash/bashrc`                  | `~/.bashrc`                      | bash プロンプト（zsh の git プロンプトを移植。Docker コンテナ用） |
-| `.vimrc`                       | `~/.vimrc`                       | Vim 設定                                                          |
-| `.tmux.conf`                   | `~/.tmux.conf`                   | tmux 設定（prefix C-q など。VM 側は nix/home/tmux.nix が読み込む）|
-| `.ideavimrc`                   | `~/.ideavimrc`                   | IntelliJ (IdeaVim) 設定                                           |
-| `.config/nvim/`                | `~/.config/nvim`                 | Neovim 設定（LazyVim 一式。ディレクトリ単位でリンク）             |
-| `.config/wezterm/wezterm.lua`  | `~/.config/wezterm/wezterm.lua`  | WezTerm 本体設定                                                  |
-| `.config/wezterm/keybinds.lua` | `~/.config/wezterm/keybinds.lua` | WezTerm キーバインド                                              |
-| `.config/ghostty/config`       | `~/.config/ghostty/config`       | Ghostty 設定                                                      |
-| `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | Alacritty 設定（フォント・透過など）                      |
-| `vscode/settings.json`         | `~/Library/Application Support/Code/User/settings.json` | VSCode 設定（マシン固有値を除去済み）             |
-| `vscode/keybindings.json`      | `~/Library/Application Support/Code/User/keybindings.json` | VSCode キーバインド（OS 別パスで解決）         |
+リポジトリ内に実体を持ち、Home Manager が symlink するもの:
 
-シンボリックリンクの対象外（`install.sh` の `EXCLUDES` に入っている）:
+| リポジトリ内のパス | 配置先 | 担当モジュール |
+| --- | --- | --- |
+| `.config/nvim/` | `~/.config/nvim` | [neovim.nix](nix/home/neovim.nix) |
+| `.vimrc` | `~/.vimrc` | [vim.nix](nix/home/vim.nix) |
+| `.ideavimrc` | `~/.ideavimrc` | [vim.nix](nix/home/vim.nix) |
+| `.tmux.conf` | `~/.config/tmux/tmux.conf`（`readFile` で取り込み） | [tmux.nix](nix/home/tmux.nix) |
+| `.config/wezterm/*.lua` | `~/.config/wezterm/*.lua` | [terminals.nix](nix/home/terminals.nix) |
+| `.config/ghostty/config` | `~/.config/ghostty/config` | [terminals.nix](nix/home/terminals.nix) |
+| `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | [terminals.nix](nix/home/terminals.nix) |
+| `vscode/settings.json` | `~/Library/Application Support/Code/User/settings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
+| `vscode/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
 
-| パス | 用途 |
+Nix モジュールが設定ファイルを生成するもの（リポジトリに実体は無い）:
+
+| 生成物 | 担当モジュール |
 | --- | --- |
-| `flake.nix` / `flake.lock` | Home Manager 設定の入口（macOS / Linux 共通） |
-| `nix/home/` | Home Manager のモジュール群（zsh・git・lazygit・nvim・vim・tmux ＋ macOS 専用の terminals・vscode） |
+| zsh + oh-my-zsh（補完 / 履歴 / エイリアス、macOS 固有部は darwin ブロック） | [zsh.nix](nix/home/zsh.nix) |
+| git + delta + gh | [git.nix](nix/home/git.nix) |
+| lazygit | [lazygit.nix](nix/home/lazygit.nix) |
+| 基本 CLI ツール群（ripgrep / fd / bat / eza / fzf / zoxide ...） | [packages.nix](nix/home/packages.nix) |
 
 ## Nix のインストール（macOS / Linux 共通）
 
@@ -64,6 +61,9 @@ nix --version   # 動作確認
 
 ## セットアップ
 
+初回適用時、VM 標準の `~/.bashrc` など既存ファイルがあると `home-manager switch` は
+「上書きできない」で止まる。`-b backup` を付けると `<file>.backup` に退避してから進む。
+
 ### macOS（ホスト）
 
 前提として **Nix**（上記）と、GUI アプリ用に [Homebrew](https://brew.sh) を導入しておく。
@@ -79,20 +79,8 @@ brew install --cask wezterm ghostty alacritty visual-studio-code
 git clone https://github.com/kkito0726/dotfiles.git ~/dotfiles
 
 # 4. Home Manager を適用（home-manager コマンドはまだ無いので nix run で呼ぶ）
-nix run home-manager/master -- switch --flake ~/dotfiles#$USER@$(uname -m | sed 's/arm64/aarch64/')-darwin
+nix run home-manager/master -- switch -b backup --flake ~/dotfiles#$USER@$(uname -m | sed 's/arm64/aarch64/')-darwin
 ```
-
-> **旧 `install.sh` で symlink 済みのマシンから移行する場合**、`home-manager switch` は
-> 既存ファイルを上書きできず失敗する。適用前に install.sh 由来のリンクを外しておく（実体は
-> repo 側なので消えない）:
->
-> ```sh
-> rm -f ~/.zshrc ~/.zshenv ~/.zprofile \
->       ~/.config/wezterm/wezterm.lua ~/.config/wezterm/keybinds.lua \
->       ~/.config/ghostty/config ~/.config/alacritty/alacritty.toml
-> rm -f "$HOME/Library/Application Support/Code/User/settings.json" \
->       "$HOME/Library/Application Support/Code/User/keybindings.json"
-> ```
 
 `$USER` が `flake.nix` の `username`（既定 `ken`）と一致している必要がある。違う場合は先に `flake.nix` を書き換える。
 以降は `hm-switch`（zsh 関数。OS を判定して適切な flake attribute を選ぶ）で再適用できる。
@@ -104,42 +92,45 @@ Nix も git も入っていない状態からの完全な手順は [docs/nix-vm.
 
 ```sh
 git clone https://github.com/kkito0726/dotfiles.git ~/dotfiles
-nix run home-manager/master -- switch --flake ~/dotfiles#$USER@$(uname -m)-linux
+nix run home-manager/master -- switch -b backup --flake ~/dotfiles#$USER@$(uname -m)-linux
 ```
-
-## install.sh（フォールバック）
-
-> Nix を導入できないマシン専用。**Nix で運用しているホストでは実行しないこと**
-> （`~/.zshenv` が Home Manager と衝突する）。zsh 系設定は Homebrew 前提のため Linux では動かない。
-
-| コマンド                 | 動作                                                             |
-| ------------------------ | ---------------------------------------------------------------- |
-| `./install.sh`           | リンクを作成（既存ファイルは確認のうえバックアップして置き換え） |
-| `./install.sh --dry-run` | 実際には変更せず、何が起きるかだけ表示                           |
-| `./install.sh --force`   | 確認なしで既存ファイルを置き換え（バックアップは必ず取る）       |
-| `./install.sh --help`    | ヘルプを表示                                                     |
-
-### 仕様
-
-- **冪等**: 既に正しいリンクが張られていれば `skip`。何度実行しても安全。
-- **バックアップ**: リンク先に実体ファイルがある場合、`~/.dotfiles-backup/<日時>/` へ退避してからリンクを張る。
-- **除外**: `.git` / `install.sh` / `README.md` などはリンク対象外（`install.sh` の `EXCLUDES` で管理）。
-- **例外マッピング**: 実体の位置とリンク先を変えたい場合は `install.sh` の `LINK_MAP` に
-  `"リポジトリ内の相対パス:$HOME からのリンク先"` を追加する。
-- **OS 依存パス**: VSCode 設定など OS ごとに置き場所が違うものは、`install.sh` 内で `uname` 判定し
-  リンク先を動的に決定する（macOS: `Library/Application Support/Code/User`、
-  Linux: `.config/Code/User`、Windows: `AppData/Roaming/Code/User`）。
-- **ディレクトリ単位リンク**: 配下のファイルが増減する設定（LazyVim 等）は、末端ファイルではなく
-  ディレクトリ自体をリンクする。`install.sh` の `LINK_DIRS` に相対パスを追加する（例: `.config/nvim`）。
-  これにより、プラグイン追加や `lazy-lock.json` 更新のたびに `install.sh` を再実行する必要がない。
 
 ## 運用メモ
 
-- ファイルの**中身を編集**しただけなら `install.sh` の再実行は不要（実体は1つで、リンク経由でそのまま反映される）。
-- **新しいファイルを管理対象に追加**したときだけ `install.sh` を再実行する。
-- 既存の `~/xxx` を管理下に置くには、実体をリポジトリへ移動してから `install.sh` を実行する。
+- **設定ファイルの中身を編集しただけ**なら再適用は不要。実体はリポジトリ側にあり、symlink 経由で
+  そのまま反映される（アプリの再読み込みだけでよい）。
+- **設定を Nix で生成しているもの**（zsh / git / lazygit のエイリアスや options など）を変えたときや、
+  **新しいファイルを管理対象に追加**したときは再適用する:
 
   ```sh
-  mv ~/.gitconfig ~/dotfiles/.gitconfig
-  cd ~/dotfiles && ./install.sh
+  nvim ~/dotfiles/nix/home/zsh.nix   # 設定を編集
+  hm-switch                          # 適用（OS を自動判定）
+  cd ~/dotfiles && git add -u && git commit -m "..." && git push
   ```
+
+- macOS でも VM でも `~/dotfiles` は同じリポジトリ。片方で編集して `git push` → もう片方で
+  `git pull && hm-switch` すれば揃う。
+- OS 別に効かせたい設定は、各モジュール内で `lib.mkIf pkgs.stdenv.isDarwin` や
+  `lib.optionalString isDarwin` で分岐する（例は [zsh.nix](nix/home/zsh.nix) / [terminals.nix](nix/home/terminals.nix)）。
+
+## リポジトリ構成
+
+```
+flake.nix / flake.lock   入口。username / 対象システム / 依存の固定
+nix/home/
+  default.nix    共通設定（OS 判定・stateVersion・環境変数）＋ import
+  packages.nix   基本 CLI ツール群
+  zsh.nix        zsh + oh-my-zsh（macOS 固有部は darwin ブロック）
+  git.nix        git + delta + gh
+  lazygit.nix    lazygit
+  neovim.nix     neovim 本体 + LazyVim のランタイム依存 + 設定リンク
+  vim.nix        本物の Vim + .vimrc / .ideavimrc リンク
+  tmux.nix       tmux（.tmux.conf を単一ソースとして取り込み）
+  terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
+  vscode.nix     VSCode 設定リンク（macOS のみ）
+.config/nvim/    LazyVim 一式（実体）
+.vimrc .ideavimrc .tmux.conf   各種設定の実体
+.config/{wezterm,ghostty,alacritty}   ターミナル設定の実体
+vscode/          VSCode 設定の実体
+docs/            セットアップ手順・キーバインド一覧
+```

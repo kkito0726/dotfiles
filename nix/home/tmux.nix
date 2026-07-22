@@ -1,9 +1,9 @@
 { pkgs, config, ... }:
 
 let
-  # ホストと共有するキーバインド定義。install.sh がホストの ~/.tmux.conf へ
-  # リンクするのと同じファイル (リポジトリ直下の .tmux.conf) を、VM 側でも
-  # ここで読み込む。これで prefix / ペイン移動 / 分割の定義は 1 箇所だけになる。
+  # キーバインド定義はリポジトリ直下の .tmux.conf に単一ソース化してある。
+  # それを readFile で取り込み、macOS / VM とも同じ定義を使う。
+  # これで prefix / ペイン移動 / 分割の定義は 1 箇所だけになる。
   sharedConf = builtins.readFile ../../.tmux.conf;
 in
 {

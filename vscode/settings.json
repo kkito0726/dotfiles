@@ -1,12 +1,17 @@
 {
   "workbench.iconTheme": "material-icon-theme",
+  "docker.dockerPath": "/usr/bin/docker",
+  "dev.containers.dockerPath": "",
+  "remote.SSH.remotePlatform": {
+    "my-vm.orb.local": "linux",
+  },
   "terminal.integrated.enableMultiLinePasteWarning": false,
   "editor.minimap.enabled": false,
   "git.confirmSync": false,
   "remote.autoForwardPortsSource": "hybrid",
   "editor.formatOnSave": true,
   "[go]": {
-    "editor.defaultFormatter": "golang.go"
+    "editor.defaultFormatter": "golang.go",
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   // キーバインドは dotfiles の ~/.vimrc を単一ソースとして読み込む
@@ -31,49 +36,49 @@
     // バッファ削除: <leader>bd
     {
       "before": ["<leader>", "b", "d"],
-      "commands": ["workbench.action.closeActiveEditor"]
+      "commands": ["workbench.action.closeActiveEditor"],
     },
     // ウィンドウ分割: <leader>| (縦) / <leader>- (横)
     {
       "before": ["<leader>", "|"],
-      "commands": ["workbench.action.splitEditorRight"]
+      "commands": ["workbench.action.splitEditorRight"],
     },
     {
       "before": ["<leader>", "-"],
-      "commands": ["workbench.action.splitEditorDown"]
+      "commands": ["workbench.action.splitEditorDown"],
     },
     // 検索・探索（LazyVim の Telescope 相当）
     {
       "before": ["<leader>", "<space>"],
-      "commands": ["workbench.action.quickOpen"]
+      "commands": ["workbench.action.quickOpen"],
     }, // ファイル検索
     {
       "before": ["<leader>", "f", "f"],
-      "commands": ["workbench.action.quickOpen"]
+      "commands": ["workbench.action.quickOpen"],
     }, // ファイル検索
     {
       "before": ["<leader>", "f", "b"],
-      "commands": ["workbench.action.showAllEditors"]
+      "commands": ["workbench.action.showAllEditors"],
     }, // バッファ(開いてるエディタ)
     {
       "before": ["<leader>", "f", "r"],
-      "commands": ["workbench.action.openRecent"]
+      "commands": ["workbench.action.openRecent"],
     }, // 最近開いた
     {
       "before": ["<leader>", "/"],
-      "commands": ["workbench.action.findInFiles"]
+      "commands": ["workbench.action.findInFiles"],
     }, // 全文検索(grep)
     {
       "before": ["<leader>", "s", "g"],
-      "commands": ["workbench.action.findInFiles"]
+      "commands": ["workbench.action.findInFiles"],
     }, // 全文検索(grep)
     {
       "before": ["<leader>", "s", "s"],
-      "commands": ["workbench.action.gotoSymbol"]
+      "commands": ["workbench.action.gotoSymbol"],
     }, // シンボル検索
     {
       "before": ["<leader>", ":"],
-      "commands": ["workbench.action.showCommands"]
+      "commands": ["workbench.action.showCommands"],
     }, // コマンド検索
     // LSP（LazyVim 相当）。gd / gh は VSCodeVim 組み込みを使う
     // （組み込み gd は移動後ノーマルに戻り、シンボルが選択されたままにならない）
@@ -84,13 +89,13 @@
     { "before": ["K"], "commands": ["editor.action.showHover"] }, // ホバー(型情報)
     // ジャンプ後の戻る/進む（LazyVim と同じ Ctrl+o / Ctrl+i）
     { "before": ["<C-o>"], "commands": ["workbench.action.navigateBack"] }, // 戻る
-    { "before": ["<C-i>"], "commands": ["workbench.action.navigateForward"] } // 進む
+    { "before": ["<C-i>"], "commands": ["workbench.action.navigateForward"] }, // 進む
   ],
   "files.exclude": {
-    "**/._*": true
+    "**/._*": true,
   },
   "search.exclude": {
-    "**/._*": true
+    "**/._*": true,
   },
 
   "vim.hlsearch": true,
@@ -100,7 +105,7 @@
     ".github/instructions": true,
     ".claude/rules": true,
     "~/.copilot/instructions": true,
-    "~/.claude/rules": true
+    "~/.claude/rules": true,
   },
   "cSpell.userWords": ["dtype", "kkito", "Usecase", "userv"],
   "editor.accessibilitySupport": "on",
@@ -112,119 +117,124 @@
   // ------------------------------ signals (bothering sounds) -------------------------
   "accessibility.signals.chatRequestSent": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.chatResponseReceived": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.chatUserActionRequired": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.clear": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.codeActionApplied": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.codeActionTriggered": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.diffLineDeleted": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.progress": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.editsUndone": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.positionHasWarning": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.positionHasError": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.noInlayHints": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.nextEditSuggestion": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.lineHasWarning": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.lineHasInlineSuggestion": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.lineHasFoldedArea": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.lineHasError": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.lineHasBreakpoint": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.diffLineInserted": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.diffLineModified": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.editsKept": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.notebookCellCompleted": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.notebookCellFailed": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.onDebugBreak": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.taskCompleted": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.taskFailed": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.terminalCommandFailed": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.terminalBell": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.terminalCommandSucceeded": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.terminalQuickFix": {
     "sound": "off",
-    "announcement": "off"
+    "announcement": "off",
   },
   "accessibility.signals.voiceRecordingStopped": {
-    "sound": "off"
+    "sound": "off",
   },
   "accessibility.signals.chatEditModifiedFile": {
-    "sound": "off"
-  }
+    "sound": "off",
+  },
+  "glassit.alpha": 125,
+  "claudeCode.preferredLocation": "panel",
+  "workbench.browser.showInTitleBar": false,
+  "workbench.navigationControl.enabled": false,
+  "window.commandCenter": false,
 }

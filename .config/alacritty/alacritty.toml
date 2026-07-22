@@ -11,10 +11,16 @@
 [font]
 size = 13.0
 
-# Mono 版はアイコンが 1 セル幅に固定される。Propo 版だとターミナルで桁がずれる。
-normal = { family = "MesloLGS Nerd Font Mono", style = "Regular" }
-bold   = { family = "MesloLGS Nerd Font Mono", style = "Bold" }
-italic = { family = "MesloLGS Nerd Font Mono", style = "Italic" }
+# 字幅バリアント:
+#   Mono … アイコンを 1 セル幅に押し込む (アイコンが小さい)
+#   (無印) … アイコンを本来の約 2 セル幅で描く (アイコンが大きくはっきり)
+#   Propo … プロポーショナル。ターミナルで桁がずれるので不可
+# アイコンを大きく見せたいので無印 (非 Mono) を試す。alacritty はアイコン (PUA) を
+# 幅 1 セル扱いするため、環境によっては広いアイコンがはみ出す/重なることがある。
+# その場合は末尾に " Mono" を戻す。
+normal = { family = "MesloLGS Nerd Font", style = "Regular" }
+bold   = { family = "MesloLGS Nerd Font", style = "Bold" }
+italic = { family = "MesloLGS Nerd Font", style = "Italic" }
 
 # 罫線・ブロック文字を内蔵レンダラで描画してセル間の隙間を無くす
 builtin_box_drawing = true

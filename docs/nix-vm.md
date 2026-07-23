@@ -150,6 +150,84 @@ tmux                   # prefix は C-q
 home-manager switch --flake ~/dotfiles#$USER@$(uname -m)-linux
 ```
 
+## GUI 付き Linux (キー再マップ / xremap)
+
+デスクトップ環境のある Linux で、macOS 風のキー配置 (Cmd→Ctrl) を使いたいときは
+**`$USER-gui@…` 構成**を使う。ヘッドレス VM 用の `$USER@…` にはこの設定は入らない
+(Nix は GUI の有無を自動判定できないので、構成名で明示的に切り替える)。
+
+キー再マップは [xremap](https://github.com/xremap/xremap) で行う。設定の実体は
+`~/dotfiles/.config/xremap/config.yml` (編集して即反映・そのまま commit できる)。
+担当モジュールは [nix/home/keymap.nix](../nix/home/keymap.nix)。
+
+**アプリを判別して振り分ける。** ターミナルで Cmd+C を単純に Ctrl+C にすると、コピー
+ではなく実行中プログラムへの SIGINT (中断/終了) になってしまう。そこで:
+
+- ターミナル (wezterm / ghostty / alacritty …) … Cmd+C/V を **Ctrl+Shift+C/V** (コピー/貼付)
+  にし、**Ctrl+C は触らず SIGINT のまま**残す。
+- それ以外のアプリ (VSCode / Chrome など) … **Super は Super のまま残し**、`Super+<キー>`
+  を `Ctrl+<キー>` に個別変換する (文字 a〜z / Shift 付き / よく使う記号)。これで Cmd+C・
+  Cmd+Shift+P・Cmd+/ などが macOS 感覚で効く。
+  - **残るもの (非文字キーなので変換対象外)**: Super 単独 (オーバービュー)、Super+←/→
+    (タイル)、Super+↑/↓、Super+1〜9 (Dock)、Super+PageUp/Down (ワークスペース)、
+    Super+Space (入力切替) といった GNOME のウィンドウ操作はそのまま使える。
+  - **上書きされるもの (割り切り)**: 文字ベースの GNOME ショートカット、例えば Super+L
+    (ロック)、Super+A (アプリ一覧)、Super+D (デスクトップ表示) は Ctrl+◯ に化ける。
+    残したい行は `config.yml` の該当エントリを削るだけでよい。
+- 注意: VSCode の統合ターミナルや Chrome 内の Web ターミナルは「そのアプリのウィンドウ」
+  として扱われる (=非ターミナル判定) ため、そこでのコピーは Ctrl+Shift+C を使う
+  (xremap はウィンドウ単位判定なので、アプリ内の端末パネルまでは区別できない)。
+
+この振り分けにはフォーカス中ウィンドウの判別が要る。**Ubuntu 26.04 など GNOME/Wayland が
+デフォルトの環境**では xremap の gnome variant (`nix/home/keymap.nix` で選択済み) に加えて
+**「Xremap」GNOME 拡張の導入が必要**。X11 セッションでログインするなら拡張は不要。
+
+- GNOME 拡張マネージャ (`gnome-shell-extension-manager` / flatpak の Extension Manager) か
+  [extensions.gnome.org](https://extensions.gnome.org/) から「**Xremap**」を入れて有効化する。
+- 別の環境 (KDE / sway / Hyprland / X11 のみ) なら、[keymap.nix](../nix/home/keymap.nix) の
+  `pkgs.xremap.gnome` を `pkgs.xremap.{kde,wlroots,hypr,x11}` に差し替える。
+
+### 初回のみ root で必要な設定 (Home Manager では管理できない)
+
+xremap は `/dev/uinput` を使うため、rootless で動かすには一度だけ root 権限の設定が要る。
+
+```bash
+# 1. uinput を有効化 (再起動後も有効にするなら /etc/modules-load.d/ にも書く)
+sudo modprobe uinput
+
+# 2. 自分を input グループに入れる (再ログインで反映)
+sudo usermod -aG input "$USER"
+
+# 3. uinput デバイスに input グループからアクセスできるよう udev ルールを置く
+echo 'KERNEL=="uinput", GROUP="input", MODE="0660"' \
+  | sudo tee /etc/udev/rules.d/99-xremap-uinput.rules
+sudo udevadm control --reload-rules && sudo udevadm trigger
+```
+
+### 適用
+
+```bash
+# 初回
+nix run home-manager/master -- switch --flake ~/dotfiles#$USER-gui@$(uname -m)-linux
+# 2 回目以降
+home-manager switch --flake ~/dotfiles#$USER-gui@$(uname -m)-linux
+```
+
+### 確認
+
+```bash
+systemctl --user status xremap   # active (running) になっている
+```
+
+- 再ログイン後の成功条件:
+  - **ブラウザ/エディタ**で Cmd(Super)+C / V がコピー/貼付として効く。
+  - **ターミナル**で Cmd+C がコピー、**Ctrl+C は従来どおり中断 (SIGINT)** になる。
+- 効かない/振り分けが変な場合は `journalctl --user -u xremap` でログを確認。特に
+  アプリ判別 (application) が効かないときは GNOME 拡張が有効か、`xremap --watch` で
+  出るアプリ名が `config.yml` の一覧と一致しているかを見て調整する。
+- **systemd の無い環境**では user サービスが起動しないので、
+  `xremap ~/.config/xremap/config.yml` を自前で (ログインスクリプト等から) 起動する。
+
 ## nvim の設定 / キーバインド
 
 `~/.config/nvim` は `~/dotfiles/.config/nvim` への symlink なので、ホストの
@@ -264,6 +342,7 @@ nix/home/
   neovim.nix           Neovim 本体 + LazyVim のランタイム依存 + nvim 設定のリンク
   vim.nix              本物の Vim (vim-full) + .vimrc のリンク
   tmux.nix             tmux (prefix C-q, vim 風ペイン移動)
+  keymap.nix           GUI 付き Linux 専用のキー再マップ (xremap, Cmd→Ctrl)
 ```
 
 ## 設計上の判断
@@ -278,6 +357,10 @@ nix/home/
   `nix/home/default.nix` で明示的に false にする。
 - **`programs.bash.initExtra` で zsh に exec している。** `chsh` が使えない VM
   (コンテナ等) でも対話シェルが zsh になる保険。
+- **GUI の有無は `gui` フラグで明示的に切り替える。** Nix は評価時に desktop 環境の
+  有無を判定できないので、`flake.nix` が `$USER@…` (gui 無し) と `$USER-gui@…`
+  (gui 有り, Linux のみ) の2構成を生成する。`keymap.nix` は `pkgs.stdenv.isLinux && gui`
+  で `mkIf` ガードしており、macOS / ヘッドレス Linux では空になる。
 
 ## 注意
 

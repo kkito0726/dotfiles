@@ -1,0 +1,120 @@
+# xremap — macOS 風キーバインド (GUI 付き Linux 用)。アプリを判別して振り分ける。
+#
+# このファイルが設定の実体。Home Manager が ~/.config/xremap/config.yml へ symlink する
+# ので、ここを編集して即反映・そのまま commit できる (nix/home/keymap.nix が管理)。
+# 適用対象は flake.nix の ken-gui@<system> 構成のみ。
+# キー名・構文リファレンス: https://github.com/xremap/xremap#configuration
+#
+# 【方針】Super は Super のまま残し (modmap は使わない)、Super+<キー> を Ctrl+<キー> に
+# 個別変換する。こうすると:
+#   - GNOME のウィンドウ操作 (Super 単独=オーバービュー / Super+←→ タイル / Super+↑↓ /
+#     Super+1〜9 Dock / Super+PageUp/Down ワークスペース / Super+Space 入力切替) は残る。
+#     これらは非文字キーなので下の変換に含めていない。
+#   - アプリ操作は Cmd(Super)+C/V/S/… が Ctrl+… になり macOS 感覚で使える。
+#   - 割り切り: 文字ベースの GNOME ショートカット (Super+L ロック, Super+A アプリ一覧,
+#     Super+D デスクトップ表示 等) は上書きされる。残したいものは下の該当行を消す。
+#   - ターミナルだけは Cmd+C/V を Ctrl+Shift+C/V (コピー/貼付) にし、Ctrl+C は SIGINT のまま。
+#
+# 【application 判定】GNOME/Wayland では別途「Xremap」GNOME 拡張が必要 (docs/nix-vm.md)。
+# X11 セッションなら拡張なしで動く。VSCode 統合ターミナル等はアプリ本体のウィンドウ扱い。
+# 一覧は大文字小文字を無視する正規表現(部分一致)。`xremap --watch=window` で実名を確認可。
+
+keymap:
+  # ─── ターミナル: コピー/貼付は Ctrl+Shift 系へ。Ctrl+C は変換しない = SIGINT のまま ───
+  - name: Terminal — macOS 風 copy/paste
+    application:
+      only: &terminals
+        - '/(?i).*wezterm.*/'
+        - '/(?i).*ghostty.*/'
+        - '/(?i).*alacritty.*/'
+        - '/(?i).*kitty.*/'
+        - '/(?i).*gnome.*(terminal|console).*/'
+        - '/(?i).*konsole.*/'
+    remap:
+      Super-c: C-Shift-c
+      Super-v: C-Shift-v
+      Super-f: C-Shift-f # 端末内検索 (対応端末のみ)
+
+  # ─── ターミナル以外: Super+<文字> を Ctrl+<文字> に (macOS の Cmd 相当) ───
+  # a〜z を素で変換。GNOME の Super+文字 (L/A/D 等) はここで上書きされる点に注意。
+  - name: Non-terminal — Super+letter -> Ctrl+letter
+    application:
+      not: *terminals
+    remap:
+      Super-a: C-a
+      Super-b: C-b
+      Super-c: C-c
+      Super-d: C-d
+      Super-e: C-e
+      Super-f: C-f
+      Super-g: C-g
+      Super-h: C-h
+      Super-i: C-i
+      Super-j: C-j
+      Super-k: C-k
+      Super-l: C-l
+      Super-m: C-m
+      Super-n: C-n
+      Super-o: C-o
+      Super-p: C-p
+      Super-q: C-q
+      Super-r: C-r
+      Super-s: C-s
+      Super-t: C-t
+      Super-u: C-u
+      Super-v: C-v
+      Super-w: C-w
+      Super-x: C-x
+      Super-y: C-y
+      Super-z: C-z
+
+  # ─── ターミナル以外: Super+Shift+<文字> を Ctrl+Shift+<文字> に ───
+  # Cmd+Shift+P (コマンドパレット) / Cmd+Shift+Z (やり直し) / Cmd+Shift+T 等をカバー。
+  - name: Non-terminal — Super+Shift+letter -> Ctrl+Shift+letter
+    application:
+      not: *terminals
+    remap:
+      Super-Shift-a: C-Shift-a
+      Super-Shift-b: C-Shift-b
+      Super-Shift-c: C-Shift-c
+      Super-Shift-d: C-Shift-d
+      Super-Shift-e: C-Shift-e
+      Super-Shift-f: C-Shift-f
+      Super-Shift-g: C-Shift-g
+      Super-Shift-h: C-Shift-h
+      Super-Shift-i: C-Shift-i
+      Super-Shift-j: C-Shift-j
+      Super-Shift-k: C-Shift-k
+      Super-Shift-l: C-Shift-l
+      Super-Shift-m: C-Shift-m
+      Super-Shift-n: C-Shift-n
+      Super-Shift-o: C-Shift-o
+      Super-Shift-p: C-Shift-p
+      Super-Shift-q: C-Shift-q
+      Super-Shift-r: C-Shift-r
+      Super-Shift-s: C-Shift-s
+      Super-Shift-t: C-Shift-t
+      Super-Shift-u: C-Shift-u
+      Super-Shift-v: C-Shift-v
+      Super-Shift-w: C-Shift-w
+      Super-Shift-x: C-Shift-x
+      Super-Shift-y: C-Shift-y
+      Super-Shift-z: C-Shift-z
+
+  # ─── ターミナル以外: Super+記号を Ctrl+記号に (よく使うものだけ) ───
+  # Cmd+/ コメント, Cmd+, 設定, Cmd+- / Cmd+= ズーム, Cmd+[ / Cmd+] インデント/戻進 等。
+  # Super+Grave(`) と Super+Space は GNOME に残したいので入れていない。
+  - name: Non-terminal — Super+symbol -> Ctrl+symbol
+    application:
+      not: *terminals
+    remap:
+      Super-Slash: C-Slash
+      Super-Comma: C-Comma
+      Super-Dot: C-Dot
+      Super-Semicolon: C-Semicolon
+      Super-Apostrophe: C-Apostrophe
+      Super-LeftBrace: C-LeftBrace # [
+      Super-RightBrace: C-RightBrace # ]
+      Super-Minus: C-Minus # ズームアウト
+      Super-Equal: C-Equal # ズームイン
+      Super-Backslash: C-Backslash

@@ -2,11 +2,15 @@
   config,
   pkgs,
   lib,
+  dotfilesDir,
   ...
 }:
 
 let
   isDarwin = pkgs.stdenv.isDarwin;
+  # よく編集する対話設定 (alias/関数/挙動) はここの生ファイルを直接 source する。
+  # nix store ではなく作業ツリーを指すので、編集して source で即反映できる。
+  repo = "${config.home.homeDirectory}/${dotfilesDir}";
 in
 {
   programs.zsh = {
@@ -41,17 +45,8 @@ in
       ];
     };
 
-    shellAliases = {
-      ls = "eza --group-directories-first";
-      ll = "eza -l --group-directories-first --git";
-      la = "eza -la --group-directories-first --git";
-      lt = "eza --tree --level=2";
-      # cat は本物の cat のまま。色付き表示が欲しいときは bat を直接使う。
-      v = "nvim";
-      # vim は本物の Vim (vim.nix) を指すので alias は張らない
-      lg = "lazygit";
-      hm = "home-manager";
-    };
+    # alias は Nix で固定せず、末尾で source する生ファイル (.config/zsh/rc.zsh) に置く。
+    # 頻繁に編集するものなので、編集して即反映 (hm-switch 不要) にするため。
 
     # ログインシェル (.zprofile)。macOS のみ Homebrew / OrbStack を初期化する。
     # brew shellenv は login shell で 1 度だけ評価すればよいのでここに置く。
@@ -72,19 +67,6 @@ in
     initContent = ''
       # Nix が入れたコマンドを最優先にする
       export PATH="$HOME/.nix-profile/bin:$PATH"
-
-      # ディレクトリ移動を快適にする
-      setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
-      setopt INTERACTIVE_COMMENTS
-
-      # 補完で大文字小文字を区別しない
-      zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-      zstyle ':completion:*' menu select
-
-      # 編集中のコマンドを nvim で開く (Ctrl-X Ctrl-E → :wq で戻る)
-      autoload -Uz edit-command-line
-      zle -N edit-command-line
-      bindkey '^X^E' edit-command-line
 
       # このリポジトリを編集して即反映するためのヘルパー。
       # OS に応じて flake の attribute (…-darwin / …-linux) を切り替える。
@@ -119,6 +101,11 @@ in
       # よく使うエイリアス
       alias fmt-python="isort . && black ."
       alias pyMEA-classmap="pyreverse -o png -p pyMEA pyMEA"
+    ''
+    # よく編集する対話設定はリポジトリの生ファイルを最後に読む。編集したら
+    # `source ~/.config/zsh/rc.zsh` か新しいシェルで即反映 (hm-switch 不要)。
+    + ''
+      [ -f "${repo}/.config/zsh/rc.zsh" ] && source "${repo}/.config/zsh/rc.zsh"
     '';
   };
 

@@ -1,8 +1,9 @@
-# zsh の「よく編集する対話設定」。この実体ファイルが ~/.config/zsh/rc.zsh へ symlink され
-# (zsh.nix の xdg.configFile)、生成された ~/.config/zsh/.zshrc の末尾から source される。
+# 普段編集する zsh 設定。この実体ファイルが ~/.zshrc へ symlink され (zsh.nix の home.file)、
+# 本体 rc (~/.config/zsh/.zshrc, HM 生成) の末尾から source される。
 #
-# symlink はリポジトリの作業ツリーを指すので、編集したら `source ~/.config/zsh/rc.zsh` か
+# symlink はリポジトリの作業ツリーを指すので、~/.zshrc を編集したら `source ~/.zshrc` か
 # 新しいシェルを開くだけで即反映される (hm-switch 不要・そのまま commit できる)。
+# oh-my-zsh / プラグイン / 補完 / 履歴 / OS 依存部と hm-switch は zsh.nix 側が管理する。
 # oh-my-zsh / プラグイン / 補完 / 履歴 / OS 依存部 (Homebrew の pyenv・nvm 等) と
 # hm-switch は zsh.nix 側が管理する。ここには OS 非依存の alias / 関数 / 挙動を書く。
 

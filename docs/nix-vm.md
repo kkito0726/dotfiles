@@ -22,8 +22,9 @@ macOS ホスト・Linux VM とも **Home Manager (Nix) で構築する**のが�
 
 shell 設定 (zsh) は macOS / Linux とも `nix/home/zsh.nix` が生成する。macOS 固有の設定
 (Homebrew / pyenv / nvm など) は zsh.nix の darwin ブロックにまとめてある。よく編集する
-alias / 対話設定だけは生ファイル `.config/zsh/rc.zsh` に置き、生成された `.zshrc` の末尾で
-`source` する (編集して `source ~/.config/zsh/rc.zsh` で即反映・hm-switch 不要)。
+alias / 対話設定だけは生ファイル `.zshrc` (リポジトリ) に置き、`~/.zshrc` へ symlink して
+本体 rc (`~/.config/zsh/.zshrc`) の末尾で `source` する。`~/.zshrc` を編集して `source ~/.zshrc`
+で即反映・hm-switch 不要 (本体 rc は dotDir=~/.config/zsh 側なので ~/.zshrc とは衝突しない)。
 
 nvim 設定 (`.config/nvim`) と vim 設定 (`.vimrc`) は macOS / Linux で同じ実体を指すので、
 どちらで編集しても git 経由で共有される。
@@ -338,7 +339,7 @@ flake.lock             nixpkgs / home-manager のバージョン固定
 nix/home/
   default.nix          共通設定 (stateVersion, 環境変数, genericLinux)
   packages.nix         基本 CLI ツール群 (ripgrep, fd, bat, eza, fzf, ...)
-  zsh.nix              zsh + oh-my-zsh + 補完 / 履歴 (alias/対話設定は .config/zsh/rc.zsh を source)
+  zsh.nix              zsh + oh-my-zsh + 補完 / 履歴 (alias/対話設定は ~/.zshrc を source)
   git.nix              git 設定 + delta + gh
   lazygit.nix          lazygit
   neovim.nix           Neovim 本体 + LazyVim のランタイム依存 + nvim 設定のリンク

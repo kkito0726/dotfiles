@@ -30,13 +30,13 @@ zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から�
 | `vscode/settings.json` | `~/Library/Application Support/Code/User/settings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
 | `vscode/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
 | `.config/xremap/config.yml` | `~/.config/xremap/config.yml`（GUI 付き Linux のみ） | [keymap.nix](nix/home/keymap.nix) |
-| `.config/zsh/rc.zsh` | `~/.config/zsh/rc.zsh`（生成された `.zshrc` の末尾から `source`） | [zsh.nix](nix/home/zsh.nix) |
+| `.zshrc` | `~/.zshrc`（本体 rc `~/.config/zsh/.zshrc` の末尾から `source`） | [zsh.nix](nix/home/zsh.nix) |
 
 Nix モジュールが設定ファイルを生成するもの（リポジトリに実体は無い）:
 
 | 生成物 | 担当モジュール |
 | --- | --- |
-| zsh + oh-my-zsh（補完 / 履歴、macOS 固有部は darwin ブロック）。alias や対話設定は末尾で `.config/zsh/rc.zsh`（生ファイル）を `source` | [zsh.nix](nix/home/zsh.nix) |
+| zsh + oh-my-zsh（補完 / 履歴、macOS 固有部は darwin ブロック）。alias や対話設定は末尾で `~/.zshrc`（生ファイル）を `source` | [zsh.nix](nix/home/zsh.nix) |
 | git + delta + gh | [git.nix](nix/home/git.nix) |
 | lazygit | [lazygit.nix](nix/home/lazygit.nix) |
 | 基本 CLI ツール群（ripgrep / fd / bat / eza / fzf / zoxide ...） | [packages.nix](nix/home/packages.nix) |
@@ -109,8 +109,8 @@ nix run home-manager/master -- switch -b backup --flake ~/dotfiles#$USER-gui@$(u
 
 - **設定ファイルの中身を編集しただけ**なら再適用は不要。実体はリポジトリ側にあり、symlink 経由で
   そのまま反映される（アプリの再読み込みだけでよい）。
-- **zsh の alias / 対話設定**は [.config/zsh/rc.zsh](.config/zsh/rc.zsh) に置いてあり、`source` で
-  直接読まれる。編集したら `source ~/.config/zsh/rc.zsh` か新しいシェルを開くだけでよく、
+- **zsh の alias / 対話設定**は [.zshrc](.zshrc)（`~/.zshrc` に symlink）に置いてあり、本体 rc の
+  末尾から `source` される。編集したら `source ~/.zshrc` か新しいシェルを開くだけでよく、
   **hm-switch 不要**（oh-my-zsh・プラグイン・補完など構造部を変えるときだけ zsh.nix を編集して再適用）。
 - **設定を Nix で生成しているもの**（git / lazygit の options、zsh の oh-my-zsh 構成など）を
   変えたときや、**新しいファイルを管理対象に追加**したときは再適用する:

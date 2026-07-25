@@ -45,7 +45,7 @@ in
       ];
     };
 
-    # alias は Nix で固定せず、末尾で source する生ファイル (.config/zsh/rc.zsh) に置く。
+    # alias は Nix で固定せず、末尾で source する生ファイル (~/.zshrc) に置く。
     # 頻繁に編集するものなので、編集して即反映 (hm-switch 不要) にするため。
 
     # ログインシェル (.zprofile)。macOS のみ Homebrew / OrbStack を初期化する。
@@ -102,19 +102,20 @@ in
       alias fmt-python="isort . && black ."
       alias pyMEA-classmap="pyreverse -o png -p pyMEA pyMEA"
     ''
-    # よく編集する対話設定は最後に読む。実体は下の xdg.configFile が repo の作業ツリーへ
-    # symlink しているので、編集したら `source ~/.config/zsh/rc.zsh` か新しいシェルで
-    # 即反映される (hm-switch 不要)。
+    # よく編集する対話設定は最後に ~/.zshrc から読む。dotDir=~/.config/zsh のため zsh の
+    # 本体 rc は ~/.config/zsh/.zshrc (HM 生成) で、~/.zshrc は自動では読まれず空いている。
+    # そこを下の home.file が repo の作業ツリーへ symlink するので、~/.zshrc を編集したら
+    # `source ~/.zshrc` か新しいシェルで即反映される (hm-switch 不要)。
+    # ※ ZDOTDIR は ~/.config/zsh なので、ここは必ず $HOME/.zshrc を指すこと (無限再帰回避)。
     + ''
-      [ -f "${config.xdg.configHome}/zsh/rc.zsh" ] && source "${config.xdg.configHome}/zsh/rc.zsh"
+      [ -f "$HOME/.zshrc" ] && source "$HOME/.zshrc"
     '';
   };
 
-  # rc.zsh を ~/.config/zsh/rc.zsh へ symlink する。neovim.nix / terminals.nix と同じく
-  # mkOutOfStoreSymlink なので nix store ではなくリポジトリの作業ツリーを指し、
-  # 編集して即反映・そのまま commit できる。
-  # (同じディレクトリの .zshrc は Home Manager が生成する別ファイル)
-  xdg.configFile."zsh/rc.zsh".source = config.lib.file.mkOutOfStoreSymlink "${repo}/.config/zsh/rc.zsh";
+  # 普段編集する zsh 設定の実体はリポジトリの .zshrc。.vimrc / .tmux.conf と同じ流儀で
+  # ~/.zshrc へ mkOutOfStoreSymlink する (nix store ではなく作業ツリーを指すので即反映)。
+  # HM の本体 rc は ~/.config/zsh/.zshrc なので、この ~/.zshrc とは衝突しない。
+  home.file.".zshrc".source = config.lib.file.mkOutOfStoreSymlink "${repo}/.zshrc";
 
   # zsh をログインシェルにできない環境 (chsh が使えない VM など) の保険として、
   # bash から対話シェル起動時に zsh へ委譲する。

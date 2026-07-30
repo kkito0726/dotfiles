@@ -35,6 +35,11 @@ in
       VISUAL = "nvim";
       PAGER = "less -FR";
     };
+
+    # ユーザーローカルの実行ファイル用 PATH。zsh/bash 問わず反映される。
+    sessionPath = [
+      "$HOME/.local/bin"
+    ];
   };
 
   # NixOS 以外の Linux ディストロ (Ubuntu / Debian / Fedora など) 向けに

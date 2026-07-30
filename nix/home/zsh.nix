@@ -95,8 +95,8 @@ in
       [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
       [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
 
-      # ユーザーローカルの実行ファイル
-      export PATH="$HOME/go/bin:$HOME/.local/bin:$HOME/bin:$PATH"
+      # ユーザーローカルの実行ファイル (.local/bin は home.sessionPath で共通管理)
+      export PATH="$HOME/go/bin:$HOME/bin:$PATH"
 
       # よく使うエイリアス
       alias fmt-python="isort . && black ."

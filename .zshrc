@@ -3,7 +3,6 @@
 #
 # symlink はリポジトリの作業ツリーを指すので、~/.zshrc を編集したら `source ~/.zshrc` か
 # 新しいシェルを開くだけで即反映される (hm-switch 不要・そのまま commit できる)。
-# oh-my-zsh / プラグイン / 補完 / 履歴 / OS 依存部と hm-switch は zsh.nix 側が管理する。
 # oh-my-zsh / プラグイン / 補完 / 履歴 / OS 依存部 (Homebrew の pyenv・nvm 等) と
 # hm-switch は zsh.nix 側が管理する。ここには OS 非依存の alias / 関数 / 挙動を書く。
 
@@ -17,6 +16,10 @@ alias v='nvim'
 # vim は本物の Vim (vim.nix) を指すので alias は張らない
 alias lg='lazygit'
 alias hm='home-manager'
+
+# Python まわり。コマンドが無い環境では呼んだときに落ちるだけなので OS 分岐はしない。
+alias fmt-python='isort . && black .'
+alias pyMEA-classmap='pyreverse -o png -p pyMEA pyMEA'
 
 # ── 対話シェルの挙動 ───────────────────────────────────────
 # ディレクトリ移動を快適にする

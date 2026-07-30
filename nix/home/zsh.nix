@@ -97,9 +97,12 @@ in
         home-manager switch --flake "$HOME/dotfiles#$attr"
       }
     ''
-    # ── macOS ホスト専用の対話設定 (旧 zsh/zshrc から移植) ──
-    # pyenv / nvm は Homebrew 管理のまま維持する (A 案)。将来 Nix / mise へ
-    # 寄せる場合はこのブロックを差し替える。
+    # ── macOS ホスト専用の対話設定 ──
+    # ここに置くのは「macOS でしか成立しない」ものだけに絞る。pyenv / nvm は Homebrew
+    # 管理のまま維持する (A 案)。将来 Nix / mise へ寄せる場合はこのブロックを差し替える。
+    #   - OS 非依存の alias   … ~/.zshrc (即反映できるので)
+    #   - ユーザーローカル PATH … home.sessionPath (default.nix, zsh/bash 共通)
+    # を担当とし、ここには書かない。
     + lib.optionalString isDarwin ''
 
       # pyenv: Python バージョン管理
@@ -111,13 +114,6 @@ in
       export NVM_DIR="$HOME/.nvm"
       [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
       [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"
-
-      # ユーザーローカルの実行ファイル (.local/bin は home.sessionPath で共通管理)
-      export PATH="$HOME/go/bin:$HOME/bin:$PATH"
-
-      # よく使うエイリアス
-      alias fmt-python="isort . && black ."
-      alias pyMEA-classmap="pyreverse -o png -p pyMEA pyMEA"
     ''
     # よく編集する対話設定は最後に ~/.zshrc から読む。dotDir=~/.config/zsh のため zsh の
     # 本体 rc は ~/.config/zsh/.zshrc (HM 生成) で、~/.zshrc は自動では読まれず空いている。

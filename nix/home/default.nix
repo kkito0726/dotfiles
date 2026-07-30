@@ -36,9 +36,14 @@ in
       PAGER = "less -FR";
     };
 
-    # ユーザーローカルの実行ファイル用 PATH。zsh/bash 問わず反映される。
+    # ユーザーローカルの実行ファイル用 PATH。zsh/bash 問わず、また macOS / Linux
+    # どちらでも反映される (以前は zsh.nix の macOS 専用ブロックに直書きしていた)。
+    # 並び順は元の macOS の zshrc (go/bin:.local/bin:bin) をそのまま踏襲している。
+    # 存在しないディレクトリが混じっていても実害は無いので OS で分岐はしない。
     sessionPath = [
+      "$HOME/go/bin"
       "$HOME/.local/bin"
+      "$HOME/bin"
     ];
   };
 

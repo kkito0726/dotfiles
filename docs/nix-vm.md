@@ -146,11 +146,22 @@ tmux                   # prefix は C-q
 
 ## 2 回目以降
 
-`home-manager` 自体もこの設定で入るので、以後は短く書ける
-(`hm-switch` エイリアスも用意してある)。
+`home-manager` 自体もこの設定で入るので、以後は短く書ける。
 
 ```bash
 home-manager switch --flake ~/dotfiles#$USER@$(uname -m)-linux
+```
+
+**GUI 付き Linux ではこのコマンドを直接使わないこと。** `$USER@…` は GUI 無し構成
+なので、これで再適用すると [キー再マップ (xremap)](#gui-付き-linux-キー再マップ--xremap)
+が丸ごと消える (`~/.config/xremap/` も systemd サービスも無くなる)。
+
+代わりに `hm-switch` (zsh 関数。[nix/home/zsh.nix](../nix/home/zsh.nix)) を使う。
+OS に加えて GUI セッションの有無 (`graphical-session.target`) も見て、
+`$USER@…` / `$USER-gui@…` を自動で選ぶ。
+
+```bash
+hm-switch      # 選んだ attribute を表示してから switch する
 ```
 
 ## GUI 付き Linux (キー再マップ / xremap)

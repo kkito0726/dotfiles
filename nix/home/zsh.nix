@@ -70,14 +70,31 @@ in
 
       # このリポジトリを編集して即反映するためのヘルパー。
       # OS に応じて flake の attribute (…-darwin / …-linux) を切り替える。
+      #
+      # Linux ではさらに GUI セッションの有無を見て $USER-gui@… を選ぶ。ここを固定に
+      # すると、GUI 機で hm-switch する度に keymap.nix (xremap) が消える事故が起きる。
+      # 判定は graphical-session.target: デスクトップにログイン中なら SSH 経由でも
+      # active、ヘッドレス VM では inactive になるので従来どおり $USER@… が選ばれる。
+      # macOS は systemd が無いうえ flake 側にも -gui 構成が無いので分岐に含めない。
       hm-switch() {
-        local arch sys
+        local arch sys attr
         arch="$(uname -m | sed 's/arm64/aarch64/')"
         case "$(uname -s)" in
-          Darwin) sys="$arch-darwin" ;;
-          *)      sys="$arch-linux" ;;
+          Darwin)
+            sys="$arch-darwin"
+            attr="$USER@$sys"
+            ;;
+          *)
+            sys="$arch-linux"
+            if systemctl --user is-active -q graphical-session.target 2>/dev/null; then
+              attr="$USER-gui@$sys"
+            else
+              attr="$USER@$sys"
+            fi
+            ;;
         esac
-        home-manager switch --flake "$HOME/dotfiles#$USER@$sys"
+        echo "hm-switch: $attr"
+        home-manager switch --flake "$HOME/dotfiles#$attr"
       }
     ''
     # ── macOS ホスト専用の対話設定 (旧 zsh/zshrc から移植) ──

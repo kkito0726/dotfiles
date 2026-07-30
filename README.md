@@ -28,7 +28,7 @@ zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から�
 | `.config/ghostty/config` | `~/.config/ghostty/config` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | [terminals.nix](nix/home/terminals.nix) |
 | `vscode/settings.json` | `~/Library/Application Support/Code/User/settings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
-| `vscode/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json`（macOS のみ） | [vscode.nix](nix/home/vscode.nix) |
+| `vscode/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json`（macOS）<br>`~/.config/Code/User/keybindings.json`（GUI 付き Linux） | [vscode.nix](nix/home/vscode.nix) |
 | `.config/xremap/config.yml` | `~/.config/xremap/config.yml`（GUI 付き Linux のみ） | [keymap.nix](nix/home/keymap.nix) |
 | `.zshrc` | `~/.zshrc`（本体 rc `~/.config/zsh/.zshrc` の末尾から `source`） | [zsh.nix](nix/home/zsh.nix) |
 
@@ -140,7 +140,7 @@ nix/home/
   vim.nix        本物の Vim + .vimrc / .ideavimrc リンク
   tmux.nix       tmux（.tmux.conf を単一ソースとして取り込み）
   terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
-  vscode.nix     VSCode 設定リンク（macOS のみ）
+  vscode.nix     VSCode 設定リンク（macOS は settings/keybindings、GUI Linux は keybindings のみ）
 .config/nvim/    LazyVim 一式（実体）
 .vimrc .ideavimrc .tmux.conf   各種設定の実体
 .config/{wezterm,ghostty,alacritty}   ターミナル設定の実体

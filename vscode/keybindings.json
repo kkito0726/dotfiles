@@ -16,5 +16,31 @@
   { "key": "cmd+ctrl+left", "command": "workbench.action.decreaseViewWidth" },
   { "key": "cmd+ctrl+right", "command": "workbench.action.increaseViewWidth" },
   { "key": "cmd+ctrl+up", "command": "workbench.action.decreaseViewHeight" },
-  { "key": "cmd+ctrl+down", "command": "workbench.action.increaseViewHeight" }
+  { "key": "cmd+ctrl+down", "command": "workbench.action.increaseViewHeight" },
+
+  // ── 統合ターミナル: Cmd+C / Cmd+V をコピー/貼付にする（GUI Linux のみ）──
+  // GUI Linux では xremap が VSCode の Super(Cmd)+C/V を Ctrl+C/V に変換する。ところが
+  // Linux 版 VSCode はターミナルのコピー/貼付を既定で Ctrl+Shift+C / Ctrl+Shift+V に
+  // 置いており、Ctrl+C / Ctrl+V はシェルへ素通しする（Ctrl+C を copy に当てる既定は
+  // win: だけに登録されている）。結果 Cmd+C が SIGINT、Cmd+V が無反応になる。
+  //
+  // xremap はエディタ部と統合ターミナル部を区別できない（同じ code ウィンドウ）ため、
+  // ここでは VSCode 側の when 句で「選択の有無」を見て分岐させる。
+  //   選択あり → コピー / 選択なし → 何も奪わずシェルへ = Ctrl+C は SIGINT のまま。
+  // copyAndClearSelection はコピー後に選択を解除するので、続けて Ctrl+C を押せば中断
+  // できる（Windows の既定と同じ挙動）。when 句と command は VSCode 既定の win: 側の
+  // 定義に合わせてある。
+  //
+  // isLinux で囲っているのは macOS の挙動を変えないため（macOS では Cmd+C が別キーと
+  // して届くので既定のままで正しく動く）。
+  {
+    "key": "ctrl+c",
+    "command": "workbench.action.terminal.copyAndClearSelection",
+    "when": "isLinux && (terminalTextSelectedInFocused || (terminalFocus && terminalTextSelected))"
+  },
+  { "key": "ctrl+v", "command": "workbench.action.terminal.paste", "when": "isLinux && terminalFocus" },
+
+  // ターミナルパネルの表示切替。既定の Ctrl+` は無効化する。
+  { "key": "alt+j", "command": "workbench.action.terminal.toggleTerminal", "when": "terminal.active" },
+  { "key": "ctrl+`", "command": "-workbench.action.terminal.toggleTerminal", "when": "terminal.active" }
 ]

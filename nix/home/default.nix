@@ -20,6 +20,7 @@ in
     ./terminals.nix
     ./vscode.nix
     ./keymap.nix
+    ./hm-switch.nix
   ];
 
   home = {

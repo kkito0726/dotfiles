@@ -85,7 +85,8 @@ nix run home-manager/master -- switch -b backup --flake ~/dotfiles#$USER@$(uname
 ```
 
 `$USER` が `flake.nix` の `username`（既定 `ken`）と一致している必要がある。違う場合は先に `flake.nix` を書き換える。
-以降は `hm-switch`（zsh 関数。OS を判定して適切な flake attribute を選ぶ）で再適用できる。
+以降は `hm-switch`（[hm-switch.nix](nix/home/hm-switch.nix) が入れるコマンド。OS と GUI の
+有無を判定して適切な flake attribute を選ぶ）で再適用できる。
 
 ### Linux VM
 
@@ -141,6 +142,8 @@ nix/home/
   tmux.nix       tmux（.tmux.conf を単一ソースとして取り込み）
   terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
   vscode.nix     VSCode 設定リンク（macOS は settings/keybindings、GUI Linux は keybindings のみ）
+  keymap.nix     GUI 付き Linux 専用のキー再マップ（xremap, Cmd→Ctrl）
+  hm-switch.nix  hm-switch コマンド（OS / GUI を判定して flake attribute を選ぶ）
 .config/nvim/    LazyVim 一式（実体）
 .vimrc .ideavimrc .tmux.conf   各種設定の実体
 .config/{wezterm,ghostty,alacritty}   ターミナル設定の実体

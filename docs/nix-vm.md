@@ -156,13 +156,26 @@ home-manager switch --flake ~/dotfiles#$USER@$(uname -m)-linux
 なので、これで再適用すると [キー再マップ (xremap)](#gui-付き-linux-キー再マップ--xremap)
 が丸ごと消える (`~/.config/xremap/` も systemd サービスも無くなる)。
 
-代わりに `hm-switch` (zsh 関数。[nix/home/zsh.nix](../nix/home/zsh.nix)) を使う。
-OS に加えて GUI セッションの有無 (`graphical-session.target`) も見て、
-`$USER@…` / `$USER-gui@…` を自動で選ぶ。
+代わりに `hm-switch` ([nix/home/hm-switch.nix](../nix/home/hm-switch.nix) が入れるコマンド)
+を使う。OS に加えて GUI の有無も見て `$USER@…` / `$USER-gui@…` を自動で選ぶ。
 
 ```bash
 hm-switch      # 選んだ attribute を表示してから switch する
 ```
+
+GUI 判定は次の順で行う。
+
+1. `graphical-session.target` が active … デスクトップにログイン中。`-gui` を選び、同時に
+   `~/.local/state/hm-gui` にマーカーを残す。
+2. マーカーがある … 過去に GUI 機として適用済み。**デスクトップ未ログインの SSH / TTY から
+   叩いても `-gui` を維持する。** target はセッション状態なので GUI 機でも inactive になり
+   うるため、ここを見ないと「SSH から再適用したら xremap が消えた」が起きる。
+3. どちらでもない … ヘッドレス VM とみなして `$USER@…` を選ぶ。
+
+> シェル関数ではなく実行ファイルにしてあるのは、関数だとシェル起動時に rc から読み込まれて
+> メモリに載るため、**関数を直したあとも既に開いているターミナルは古い定義を使い続ける**
+> から。実際それで GUI 構成が外れて xremap が消える事故が起きた。実行ファイルなら起動の
+> たびに現在の中身が読まれるので、古いターミナルから叩いても安全。
 
 ## GUI 付き Linux (キー再マップ / xremap)
 
@@ -357,6 +370,8 @@ nix/home/
   vim.nix              本物の Vim (vim-full) + .vimrc のリンク
   tmux.nix             tmux (prefix C-q, vim 風ペイン移動)
   keymap.nix           GUI 付き Linux 専用のキー再マップ (xremap, Cmd→Ctrl)
+  vscode.nix           VSCode 設定のリンク (macOS / GUI 付き Linux)
+  hm-switch.nix        hm-switch コマンド (OS / GUI を判定して flake attribute を選ぶ)
 ```
 
 ## 設計上の判断

@@ -356,6 +356,19 @@ symlink で指せなくなるため、本体パッケージだけ入れて設定
 (ソケットを `/tmp` ではなく `/run/user/$UID` に置く)。これを落とすと
 起動中の tmux サーバが新しいシェルから見えなくなるので、消さないこと。
 
+## zellij
+
+tmux の代替として併用している。キーバインド一覧・使い方は [zellij.md](zellij.md) を参照。
+
+設定の実体は `.config/zellij/config.kdl` で、tmux と同じく `mkOutOfStoreSymlink` で
+`~/.config/zellij/config.kdl` から指している。`programs.zellij` は使っているが、
+`settings` / `extraConfig` を空のままにすること (どちらかを書くと HM が
+`config.kdl` の中身を生成してしまい、symlink と衝突する)。
+
+`enableZshIntegration` は明示的に `false` にしている。既定値は
+`home.shell.enableShellIntegration` (= true) を継承するので、放っておくと
+全ての対話シェルが zellij の中で自動起動する。起動は手動 (`zellij`) に任せる。
+
 ## VM ごとに書き換える場所
 
 | 項目 | 場所 |
@@ -380,6 +393,7 @@ nix/home/
   neovim.nix           Neovim 本体 + LazyVim のランタイム依存 + nvim 設定のリンク
   vim.nix              本物の Vim (vim-full) + .vimrc のリンク
   tmux.nix             tmux (tmux.conf のリンク + 環境依存分の nix.conf 生成)
+  zellij.nix           zellij (config.kdl のリンク。詳細は docs/zellij.md)
   keymap.nix           GUI 付き Linux 専用のキー再マップ (xremap, Cmd→Ctrl)
   vscode.nix           VSCode 設定のリンク (macOS / GUI 付き Linux)
   hm-switch.nix        hm-switch コマンド (OS / GUI を判定して flake attribute を選ぶ)

@@ -10,7 +10,7 @@
 | macOS（ホスト） | Nix / Home Manager（GUI アプリ本体のみ Homebrew cask） | `flake.nix` → `ken@aarch64-darwin` |
 | Linux VM | Nix / Home Manager で環境ごと構築 | `flake.nix` → [docs/nix-vm.md](docs/nix-vm.md) |
 
-設定の実体（nvim / vim / tmux / wezterm / ghostty / alacritty / vscode）は、どの OS でも
+設定の実体（nvim / vim / tmux / zellij / wezterm / ghostty / alacritty / vscode）は、どの OS でも
 リポジトリ内の同じファイルを `mkOutOfStoreSymlink` で指すので、編集して即反映・そのまま commit できる。
 zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から設定ファイルを生成する。
 
@@ -24,6 +24,7 @@ zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から�
 | `.vimrc` | `~/.vimrc` | [vim.nix](nix/home/vim.nix) |
 | `.ideavimrc` | `~/.ideavimrc` | [vim.nix](nix/home/vim.nix) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/tmux.conf` | [tmux.nix](nix/home/tmux.nix) |
+| `.config/zellij/config.kdl` | `~/.config/zellij/config.kdl` | [zellij.nix](nix/home/zellij.nix) |
 | `.config/wezterm/*.lua` | `~/.config/wezterm/*.lua` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/ghostty/config` | `~/.config/ghostty/config` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | [terminals.nix](nix/home/terminals.nix) |
@@ -141,13 +142,14 @@ nix/home/
   neovim.nix     neovim 本体 + LazyVim のランタイム依存 + 設定リンク
   vim.nix        本物の Vim + .vimrc / .ideavimrc リンク
   tmux.nix       tmux（tmux.conf のリンク + 環境依存分の nix.conf 生成）
+  zellij.nix     zellij（config.kdl のリンク。キーバインドはデフォルト）
   terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
   vscode.nix     VSCode 設定リンク（macOS は settings/keybindings、GUI Linux は keybindings のみ）
   keymap.nix     GUI 付き Linux 専用のキー再マップ（xremap, Cmd→Ctrl）
   hm-switch.nix  hm-switch コマンド（OS / GUI を判定して flake attribute を選ぶ）
 .config/nvim/    LazyVim 一式（実体）
 .vimrc .ideavimrc   各種設定の実体（配置先が ~/ 直下のもの）
-.config/{tmux,wezterm,ghostty,alacritty}   tmux / ターミナル設定の実体
+.config/{tmux,zellij,wezterm,ghostty,alacritty}   多重化 / ターミナル設定の実体
 vscode/          VSCode 設定の実体
-docs/            セットアップ手順・キーバインド一覧
+docs/            セットアップ手順・キーバインド一覧（nix-vm.md / keybindings.md / zellij.md）
 ```

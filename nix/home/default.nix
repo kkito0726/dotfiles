@@ -17,6 +17,7 @@ in
     ./neovim.nix
     ./vim.nix
     ./tmux.nix
+    ./zellij.nix
     ./terminals.nix
     ./vscode.nix
     ./keymap.nix

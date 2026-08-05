@@ -1,0 +1,16 @@
+// zellij の設定。キーバインドは意図的に **デフォルトのまま** にしている。
+// 一覧と使い方は docs/zellij.md を参照。
+//
+// keybinds ブロックをここに書くとデフォルト定義を上書きしてしまう。
+// 個別に変えたい場合だけ、変えたい bind の分だけを書くこと
+// (`keybinds clear-defaults=true` にすると全部消えるので普段は使わない)。
+//
+// デフォルト値の全体は `zellij setup --dump-config` で確認できる。
+// 変更後は `zellij setup --check` でパースを確認できる。
+
+// スクロールバックを開くエディタ (Scroll モードの `e`)。
+// 未指定でも $EDITOR (= nvim) を見るが、環境依存を避けて明示する。
+scrollback_editor "nvim"
+
+// バージョンアップ直後にリリースノートのペインを勝手に開かない
+show_release_notes false

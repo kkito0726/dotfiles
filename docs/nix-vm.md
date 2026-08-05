@@ -319,9 +319,10 @@ nvim 側で `vim.g.clipboard` を OSC 52 に設定する。
 
 ## tmux
 
-キーバインド定義はリポジトリ直下の `.tmux.conf` に一本化している。
-ホストはこれを `~/.tmux.conf` へリンクして使い、VM 側は `nix/home/tmux.nix` が
-`builtins.readFile` で同じファイルを読み込む (単一ソース)。
+設定の実体はリポジトリの `.config/tmux/tmux.conf` に一本化している。
+`nix/home/tmux.nix` が `~/.config/tmux/tmux.conf` からここへ `mkOutOfStoreSymlink`
+するので、macOS ホストでも VM でも同じファイルを読む (単一ソース)。
+作業ツリーを直接指しているため、編集したら `prefix + r` で即反映される (`hm-switch` は不要)。
 prefix は `C-b` ではなく **`C-q`**。
 
 | キー (prefix 後) | 動作 |
@@ -335,15 +336,25 @@ prefix は `C-b` ではなく **`C-q`**。
 
 マウス操作は有効。
 
-ホストには無いが VM 用に足した設定:
+store パスを含むなど Nix でしか書けない設定は `~/.config/tmux/nix.conf` として
+home-manager が生成し、`tmux.conf` の末尾から `source-file -q` で読み込む
+(後勝ちなので上書きが効く / Nix を使わない環境では `-q` により単に無視される):
 
 - `default-shell` を zsh に固定 (`chsh` が失敗しても tmux 内は zsh)
 - `tmux-256color` + truecolor override (LazyVim の配色のため)
 - `escape-time 10` — 既定の 500ms だと nvim の `ESC` / `jj` が体感で遅れる
 - `history-limit 50000`
 
-VM では `bind r` の reload 先だけ、ホスト共有の定義を上書きして
-home-manager 生成ファイル (`~/.config/tmux/tmux.conf`) を指すようにしている。
+`mode-keys vi` のようにリポジトリ側 (`.config/tmux/tmux.conf`) で定義している設定は、
+後から潰さないよう `nix.conf` には置かないこと。
+
+なお `programs.tmux` は使っていない。あれを有効にすると home-manager が
+`~/.config/tmux/tmux.conf` の中身を生成してしまい、リポジトリの設定ファイルを
+symlink で指せなくなるため、本体パッケージだけ入れて設定ファイルは自前で置いている。
+代わりに `programs.tmux` が Linux で既定 ON にしていた `secureSocket` 相当として、
+`tmux.nix` が `TMUX_TMPDIR=$XDG_RUNTIME_DIR` を export している
+(ソケットを `/tmp` ではなく `/run/user/$UID` に置く)。これを落とすと
+起動中の tmux サーバが新しいシェルから見えなくなるので、消さないこと。
 
 ## VM ごとに書き換える場所
 
@@ -368,7 +379,7 @@ nix/home/
   lazygit.nix          lazygit
   neovim.nix           Neovim 本体 + LazyVim のランタイム依存 + nvim 設定のリンク
   vim.nix              本物の Vim (vim-full) + .vimrc のリンク
-  tmux.nix             tmux (prefix C-q, vim 風ペイン移動)
+  tmux.nix             tmux (tmux.conf のリンク + 環境依存分の nix.conf 生成)
   keymap.nix           GUI 付き Linux 専用のキー再マップ (xremap, Cmd→Ctrl)
   vscode.nix           VSCode 設定のリンク (macOS / GUI 付き Linux)
   hm-switch.nix        hm-switch コマンド (OS / GUI を判定して flake attribute を選ぶ)

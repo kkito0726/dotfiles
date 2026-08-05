@@ -23,7 +23,7 @@ zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から�
 | `.config/nvim/` | `~/.config/nvim` | [neovim.nix](nix/home/neovim.nix) |
 | `.vimrc` | `~/.vimrc` | [vim.nix](nix/home/vim.nix) |
 | `.ideavimrc` | `~/.ideavimrc` | [vim.nix](nix/home/vim.nix) |
-| `.tmux.conf` | `~/.config/tmux/tmux.conf`（`readFile` で取り込み） | [tmux.nix](nix/home/tmux.nix) |
+| `.config/tmux/tmux.conf` | `~/.config/tmux/tmux.conf` | [tmux.nix](nix/home/tmux.nix) |
 | `.config/wezterm/*.lua` | `~/.config/wezterm/*.lua` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/ghostty/config` | `~/.config/ghostty/config` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | [terminals.nix](nix/home/terminals.nix) |
@@ -40,6 +40,7 @@ Nix モジュールが設定ファイルを生成するもの（リポジトリ�
 | git + delta + gh | [git.nix](nix/home/git.nix) |
 | lazygit | [lazygit.nix](nix/home/lazygit.nix) |
 | 基本 CLI ツール群（ripgrep / fd / bat / eza / fzf / zoxide ...） | [packages.nix](nix/home/packages.nix) |
+| tmux の環境依存設定 `~/.config/tmux/nix.conf`（`default-shell` の store パスなど）。`tmux.conf` の末尾から `source-file` する | [tmux.nix](nix/home/tmux.nix) |
 
 ## Nix のインストール（macOS / Linux 共通）
 
@@ -139,14 +140,14 @@ nix/home/
   lazygit.nix    lazygit
   neovim.nix     neovim 本体 + LazyVim のランタイム依存 + 設定リンク
   vim.nix        本物の Vim + .vimrc / .ideavimrc リンク
-  tmux.nix       tmux（.tmux.conf を単一ソースとして取り込み）
+  tmux.nix       tmux（tmux.conf のリンク + 環境依存分の nix.conf 生成）
   terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
   vscode.nix     VSCode 設定リンク（macOS は settings/keybindings、GUI Linux は keybindings のみ）
   keymap.nix     GUI 付き Linux 専用のキー再マップ（xremap, Cmd→Ctrl）
   hm-switch.nix  hm-switch コマンド（OS / GUI を判定して flake attribute を選ぶ）
 .config/nvim/    LazyVim 一式（実体）
-.vimrc .ideavimrc .tmux.conf   各種設定の実体
-.config/{wezterm,ghostty,alacritty}   ターミナル設定の実体
+.vimrc .ideavimrc   各種設定の実体（配置先が ~/ 直下のもの）
+.config/{tmux,wezterm,ghostty,alacritty}   tmux / ターミナル設定の実体
 vscode/          VSCode 設定の実体
 docs/            セットアップ手順・キーバインド一覧
 ```

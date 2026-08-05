@@ -99,7 +99,7 @@ in
     '';
   };
 
-  # 普段編集する zsh 設定の実体はリポジトリの .zshrc。.vimrc / .tmux.conf と同じ流儀で
+  # 普段編集する zsh 設定の実体はリポジトリの .zshrc。.vimrc / .ideavimrc と同じ流儀で
   # ~/.zshrc へ mkOutOfStoreSymlink する (nix store ではなく作業ツリーを指すので即反映)。
   # HM の本体 rc は ~/.config/zsh/.zshrc なので、この ~/.zshrc とは衝突しない。
   home.file.".zshrc".source = config.lib.file.mkOutOfStoreSymlink "${repo}/.zshrc";

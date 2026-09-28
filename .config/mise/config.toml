@@ -1,4 +1,4 @@
-# mise のグローバル設定。~/.config/mise/config.toml から symlink される (nix/home/mise.nix, Linux のみ)。
+# mise のグローバル設定。~/.config/mise/config.toml から symlink される (nix/home/mise.nix)。
 # `mise use -g <tool>@<version>` で書き換わるので、変わったら commit する。
 
 [tools]

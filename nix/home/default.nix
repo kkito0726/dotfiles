@@ -8,8 +8,7 @@ in
   # 無限再帰になるため、OS 分岐は各モジュール内部の lib.mkIf isDarwin で行う。
   # terminals.nix / vscode.nix は macOS 専用の設定 (ターミナル / VSCode の
   # 設定リンク) で、Linux では mkIf により空になる。keymap.nix は逆に GUI 付き
-  # Linux (gui=true) 専用で、macOS / ヘッドレス Linux では空になる。mise.nix は
-  # Linux 専用 (macOS は pyenv / nvm のまま) で、macOS では空になる。
+  # Linux (gui=true) 専用で、macOS / ヘッドレス Linux では空になる。
   imports = [
     ./packages.nix
     ./zsh.nix

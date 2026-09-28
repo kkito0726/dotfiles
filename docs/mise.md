@@ -5,7 +5,6 @@
 
 - 公式ドキュメント: <https://mise.jdx.dev>
 - この手順は mise 2026.7.5（nixpkgs 版）で動作確認している
-- **Linux 専用**。macOS ホストでは言語を Nix / mise で管理せず、従来どおり pyenv / nvm（Homebrew）を使う
 
 ```
 mise use -g python@3.14     # 普段使うバージョン（グローバル）を決める
@@ -20,7 +19,7 @@ mise ls                     # 入っているもの・使われているもの
 
 | 何を | どこで管理するか |
 | --- | --- |
-| mise 本体・シェル連携 | Nix（[nix/home/mise.nix](../nix/home/mise.nix)、Linux のみ） |
+| mise 本体・シェル連携 | Nix（[nix/home/mise.nix](../nix/home/mise.nix)） |
 | 普段使う言語のバージョン | `~/.config/mise/config.toml`（実体は [.config/mise/config.toml](../.config/mise/config.toml)） |
 | プロジェクトごとのバージョン | 各プロジェクトの `mise.toml`（プロジェクト側で commit する） |
 | 言語本体のインストール先 | `~/.local/share/mise/installs/`（リポジトリ管理外） |
@@ -28,14 +27,11 @@ mise ls                     # 入っているもの・使われているもの
 言語は Nix ではなく mise で入れる。Nix だとパッチバージョンの指定やプロジェクトごとの切り替えが面倒で、
 `.nvmrc` / `.python-version` を置いている既存プロジェクトともそのまま付き合えないため。
 
-**macOS では何もしない**。`mise.nix` は `lib.mkIf (!isDarwin)` で囲ってあり、macOS で `hm-switch` しても
-mise は入らず、[zsh.nix](../nix/home/zsh.nix) の pyenv / nvm がそのまま使われる。
-
 ---
 
-## 導入（Linux）
+## 導入
 
-dotfiles 側の設定は入っているので、Home Manager を適用するだけでよい。
+dotfiles 側の設定は入っているので、Home Manager を適用するだけでよい（macOS / Linux 共通）。
 
 ### 1. 適用して言語を入れる
 
@@ -81,12 +77,18 @@ idiomatic_version_file_enable_tools = ["python", "node", "go", "java"]
 - **Java は `temurin-` を付ける**。`java = "21"` のように数字だけだと OpenJDK 版になるが、OpenJDK 版は
   最新の非 LTS しか更新されず、21 系は 21.0.2 で止まっている。Temurin は LTS にパッチが出続ける。
 
-### 3. macOS でも mise を使いたくなったら
+### 3. pyenv / nvm との関係（macOS）
 
-`mise.nix` の `lib.mkIf (!pkgs.stdenv.isDarwin)` を外し、[zsh.nix](../nix/home/zsh.nix) の macOS ブロックから
-pyenv / nvm の初期化を消してから `hm-switch` する。pyenv / nvm を残したままでも mise のほうが PATH の前に来るので
-動きはするが、シェルの起動が遅くなるだけで意味が無い。`~/.pyenv` / `~/.nvm` のグローバルパッケージ
-（`npm ls -g --depth=0` などで確認）は、後述の [CLI ツール](#cli-ツールもまとめて入れる) の方法で入れ直す。
+[zsh.nix](../nix/home/zsh.nix) の macOS ブロックには、Homebrew の pyenv / nvm を初期化する設定が残してある。
+mise の `activate` はプロンプトのたびに自分のパスを PATH の先頭へ入れ直すので、両方あっても mise が優先される。
+
+- **pyenv / nvm を入れていない Mac**（新しく Nix で構築した Mac など）では、`eval "$(pyenv init -)"` が
+  `command not found: pyenv` をシェル起動のたびに出す。zsh.nix の macOS ブロックから
+  `# pyenv: Python バージョン管理` 〜 `nvm/etc/bash_completion.d/nvm` までを消して `hm-switch` する
+  （nvm の行はファイルの存在チェック付きなので害は無いが、使わないなら一緒に消す）。
+- **pyenv / nvm から移行する場合**は、`~/.pyenv` / `~/.nvm` のグローバルパッケージ
+  （`npm ls -g --depth=0` などで確認）を、後述の [CLI ツール](#cli-ツールもまとめて入れる) の方法で入れ直してから
+  `brew uninstall pyenv nvm` する。
 
 ---
 
@@ -229,7 +231,7 @@ mise で重ねて入れる必要は無い。
 
 | 症状 | 確認すること |
 | --- | --- |
-| `mise use` したのにバージョンが変わらない | `mise doctor` で `activated: yes` か。No なら `exec zsh` するか、`hm-switch` 済みか（macOS では mise は入らない） |
+| `mise use` したのにバージョンが変わらない | `mise doctor` で `activated: yes` か。No なら `exec zsh` するか、`hm-switch` 済みか |
 | `which node` が Nix（`~/.nix-profile/bin`）を指す | mise が有効になっていない。`exec zsh` して `mise doctor` |
 | `mise.toml` で `not trusted` エラー | 中身を確認して `mise trust` |
 | `.nvmrc` が無視される | `idiomatic_version_file_enable_tools` に `node` が入っているか |

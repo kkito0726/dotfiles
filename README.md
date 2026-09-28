@@ -25,7 +25,7 @@ zsh / git / lazygit は実体ファイルを持たず、`nix/home/*.nix` から�
 | `.ideavimrc` | `~/.ideavimrc` | [vim.nix](nix/home/vim.nix) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/tmux.conf` | [tmux.nix](nix/home/tmux.nix) |
 | `.config/zellij/config.kdl` | `~/.config/zellij/config.kdl` | [zellij.nix](nix/home/zellij.nix) |
-| `.config/mise/config.toml` | `~/.config/mise/config.toml`（Linux のみ） | [mise.nix](nix/home/mise.nix) |
+| `.config/mise/config.toml` | `~/.config/mise/config.toml` | [mise.nix](nix/home/mise.nix) |
 | `.config/wezterm/*.lua` | `~/.config/wezterm/*.lua` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/ghostty/config` | `~/.config/ghostty/config` | [terminals.nix](nix/home/terminals.nix) |
 | `.config/alacritty/alacritty.toml` | `~/.config/alacritty/alacritty.toml` | [terminals.nix](nix/home/terminals.nix) |
@@ -144,7 +144,7 @@ nix/home/
   vim.nix        本物の Vim + .vimrc / .ideavimrc リンク
   tmux.nix       tmux（tmux.conf のリンク + 環境依存分の nix.conf 生成）
   zellij.nix     zellij（config.kdl のリンク。キーバインドはデフォルト）
-  mise.nix       mise（Linux 専用。言語のバージョン管理。config.toml のリンク）
+  mise.nix       mise（言語のバージョン管理。config.toml のリンク）
   terminals.nix  wezterm / ghostty / alacritty の設定リンク（全 OS）
   vscode.nix     VSCode 設定リンク（macOS は settings/keybindings、GUI Linux は keybindings のみ）
   keymap.nix     GUI 付き Linux 専用のキー再マップ（xremap, Cmd→Ctrl）
@@ -152,7 +152,7 @@ nix/home/
 .config/nvim/    LazyVim 一式（実体）
 .vimrc .ideavimrc   各種設定の実体（配置先が ~/ 直下のもの）
 .config/{tmux,zellij,wezterm,ghostty,alacritty}   多重化 / ターミナル設定の実体
-.config/mise/    mise のグローバル設定（Linux のみ）
+.config/mise/    mise のグローバル設定
 vscode/          VSCode 設定の実体
 docs/            セットアップ手順・キーバインド一覧（nix-vm.md / keybindings.md / lazyvim.md / tmux.md / zellij.md / mise.md）
 ```

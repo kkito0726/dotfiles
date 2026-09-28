@@ -151,5 +151,5 @@ nix/home/
 .vimrc .ideavimrc   各種設定の実体（配置先が ~/ 直下のもの）
 .config/{tmux,zellij,wezterm,ghostty,alacritty}   多重化 / ターミナル設定の実体
 vscode/          VSCode 設定の実体
-docs/            セットアップ手順・キーバインド一覧（nix-vm.md / keybindings.md / zellij.md）
+docs/            セットアップ手順・キーバインド一覧（nix-vm.md / keybindings.md / lazyvim.md / tmux.md / zellij.md）
 ```

@@ -1,0 +1,13 @@
+# mise のグローバル設定。~/.config/mise/config.toml から symlink される (nix/home/mise.nix, Linux のみ)。
+# `mise use -g <tool>@<version>` で書き換わるので、変わったら commit する。
+
+[tools]
+python = "3.14"
+node = "lts"
+go = "1.27"
+# 数字だけ (java = "21") だと OpenJDK 版になり LTS のパッチが出ない。ディストリビューション名を付ける。
+java = "temurin-25"
+
+[settings]
+# .nvmrc / .python-version / .go-version / .java-version も読む (既定は無効)
+idiomatic_version_file_enable_tools = ["python", "node", "go", "java"]

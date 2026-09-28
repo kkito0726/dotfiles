@@ -5,6 +5,7 @@
 
 - 公式ドキュメント: <https://mise.jdx.dev>
 - この手順は mise 2026.7.5（nixpkgs 版）で動作確認している
+- **Linux 専用**。macOS ホストでは言語を Nix / mise で管理せず、従来どおり pyenv / nvm（Homebrew）を使う
 
 ```
 mise use -g python@3.14     # 普段使うバージョン（グローバル）を決める
@@ -19,54 +20,50 @@ mise ls                     # 入っているもの・使われているもの
 
 | 何を | どこで管理するか |
 | --- | --- |
-| mise 本体・シェル連携 | Nix（`nix/home/mise.nix`） |
-| 普段使う言語のバージョン | `~/.config/mise/config.toml`（実体はリポジトリの `.config/mise/config.toml`） |
+| mise 本体・シェル連携 | Nix（[nix/home/mise.nix](../nix/home/mise.nix)、Linux のみ） |
+| 普段使う言語のバージョン | `~/.config/mise/config.toml`（実体は [.config/mise/config.toml](../.config/mise/config.toml)） |
 | プロジェクトごとのバージョン | 各プロジェクトの `mise.toml`（プロジェクト側で commit する） |
 | 言語本体のインストール先 | `~/.local/share/mise/installs/`（リポジトリ管理外） |
 
 言語は Nix ではなく mise で入れる。Nix だとパッチバージョンの指定やプロジェクトごとの切り替えが面倒で、
 `.nvmrc` / `.python-version` を置いている既存プロジェクトともそのまま付き合えないため。
 
+**macOS では何もしない**。`mise.nix` は `lib.mkIf (!isDarwin)` で囲ってあり、macOS で `hm-switch` しても
+mise は入らず、[zsh.nix](../nix/home/zsh.nix) の pyenv / nvm がそのまま使われる。
+
 ---
 
-## 導入
+## 導入（Linux）
 
-### 1. Nix モジュールを追加する
+dotfiles 側の設定は入っているので、Home Manager を適用するだけでよい。
 
-`nix/home/mise.nix` を作る:
+### 1. 適用して言語を入れる
 
-```nix
-{ config, dotfilesDir, ... }:
-
-let
-  repo = "${config.home.homeDirectory}/${dotfilesDir}";
-in
-{
-  # mise 本体 + zsh / bash への `mise activate` の差し込み。
-  # globalConfig は使わない。あれを書くと ~/.config/mise/config.toml が nix store の
-  # 読み取り専用ファイルになり、`mise use -g` が書き込めなくなる。
-  programs.mise = {
-    enable = true;
-    enableZshIntegration = true;
-    enableBashIntegration = true;
-  };
-
-  # ~/.config/mise/config.toml -> ~/dotfiles/.config/mise/config.toml
-  # 作業ツリーを直接指すので、`mise use -g` の結果がそのままリポジトリに残る。
-  xdg.configFile."mise/config.toml".source =
-    config.lib.file.mkOutOfStoreSymlink "${repo}/.config/mise/config.toml";
-}
+```sh
+hm-switch            # mise 本体とシェル連携を入れる
+exec zsh             # 新しいシェルで mise activate を効かせる
+mise install         # config.toml の言語を全部入れる
+mise doctor          # 問題が無いか確認（activated: yes になっていれば OK）
 ```
 
-`nix/home/default.nix` の `imports` に `./mise.nix` を足す。
+確認:
 
-> `programs.mise.globalConfig` に書く方法もあるが、生成されたファイルは読み取り専用になる。
-> tmux / nvim と同じく `mkOutOfStoreSymlink` でリポジトリの実ファイルを指すほうが、
-> `mise use -g` がそのまま使えて都合がよい。
+```sh
+mise ls
+which python node go java     # すべて ~/.local/share/mise/installs/... を指していれば OK
+```
 
-### 2. グローバル設定を置く
+### 2. dotfiles 側の仕組み
 
-リポジトリに `.config/mise/config.toml` を作る。普段使うバージョンをここに書く:
+**[nix/home/mise.nix](../nix/home/mise.nix)**
+
+- `programs.mise` で mise 本体を入れ、zsh / bash に `eval "$(mise activate zsh)"` を差し込む。
+- `~/.config/mise/config.toml` はリポジトリの `.config/mise/config.toml` を `mkOutOfStoreSymlink` で指す。
+  `mise use -g` の結果がそのままリポジトリに残るので、変わったら commit する。
+- `programs.mise.globalConfig` は使わない。値を書くと `config.toml` が nix store の読み取り専用ファイルになり、
+  symlink と衝突するうえ `mise use -g` も書けなくなる。
+
+**[.config/mise/config.toml](../.config/mise/config.toml)**
 
 ```toml
 [tools]
@@ -84,39 +81,12 @@ idiomatic_version_file_enable_tools = ["python", "node", "go", "java"]
 - **Java は `temurin-` を付ける**。`java = "21"` のように数字だけだと OpenJDK 版になるが、OpenJDK 版は
   最新の非 LTS しか更新されず、21 系は 21.0.2 で止まっている。Temurin は LTS にパッチが出続ける。
 
-### 3. pyenv / nvm を外す
+### 3. macOS でも mise を使いたくなったら
 
-[nix/home/zsh.nix](../nix/home/zsh.nix) の macOS ブロックにある pyenv / nvm の初期化
-（`# pyenv: Python バージョン管理` 〜 `nvm/etc/bash_completion.d/nvm` まで）を消す。
-残しておいても mise のほうが PATH の前に来るので動きはするが、シェルの起動が遅くなるだけで意味が無い。
-
-### 4. 適用して言語を入れる
-
-```sh
-hm-switch            # mise 本体とシェル連携を入れる
-exec zsh             # 新しいシェルで mise activate を効かせる
-mise install         # config.toml の言語を全部入れる
-mise doctor          # 問題が無いか確認（activated: yes になっていれば OK）
-```
-
-確認:
-
-```sh
-mise ls
-which python node go java     # すべて ~/.local/share/mise/installs/... を指していれば OK
-```
-
-### 5. 古い環境を片付ける（任意）
-
-mise で動くのを確認してから消す。
-
-```sh
-brew uninstall pyenv nvm
-rm -rf ~/.pyenv ~/.nvm
-```
-
-`~/.nvm` / `~/.pyenv` にしか無いグローバルパッケージ（`npm i -g` したもの等）は、消す前に
-`npm ls -g --depth=0` などで控えておき、後述の [CLI ツール](#cli-ツールもまとめて入れる) の方法で入れ直す。
+`mise.nix` の `lib.mkIf (!pkgs.stdenv.isDarwin)` を外し、[zsh.nix](../nix/home/zsh.nix) の macOS ブロックから
+pyenv / nvm の初期化を消してから `hm-switch` する。pyenv / nvm を残したままでも mise のほうが PATH の前に来るので
+動きはするが、シェルの起動が遅くなるだけで意味が無い。`~/.pyenv` / `~/.nvm` のグローバルパッケージ
+（`npm ls -g --depth=0` などで確認）は、後述の [CLI ツール](#cli-ツールもまとめて入れる) の方法で入れ直す。
 
 ---
 
@@ -259,8 +229,8 @@ mise で重ねて入れる必要は無い。
 
 | 症状 | 確認すること |
 | --- | --- |
-| `mise use` したのにバージョンが変わらない | `mise doctor` で `activated: yes` か。No なら `exec zsh` するか、zsh.nix に `mise activate` が入っているか |
-| `which node` が pyenv / nvm / Nix を指す | 手順3で pyenv / nvm を外したか。外したら `exec zsh` |
+| `mise use` したのにバージョンが変わらない | `mise doctor` で `activated: yes` か。No なら `exec zsh` するか、`hm-switch` 済みか（macOS では mise は入らない） |
+| `which node` が Nix（`~/.nix-profile/bin`）を指す | mise が有効になっていない。`exec zsh` して `mise doctor` |
 | `mise.toml` で `not trusted` エラー | 中身を確認して `mise trust` |
 | `.nvmrc` が無視される | `idiomatic_version_file_enable_tools` に `node` が入っているか |
 | `go install` したツールが消えた | Go を上げたため。`go:` backend で入れ直す |
